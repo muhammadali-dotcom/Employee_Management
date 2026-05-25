@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* ── Light mode variables (default) ──────────────────────────────── */
+:root {
+  --bg-base:        #f3f2ef;
+  --bg-surface:     #ffffff;
+  --bg-hover:       #eef3f8;
+  --border:         #e0dfdc;
+  --text-primary:   #000000;
+  --text-secondary: #666666;
+  --text-muted:     #999999;
+  --sidebar-bg:     #1b1f23;
+  --sidebar-text:   #ffffff;
+  --sidebar-muted:  #9ca3af;
+}
+
+/* ── Dark mode variables — LinkedIn dark palette ─────────────────── */
+html.dark {
+  --bg-base:        #1d2226;
+  --bg-surface:     #283339;
+  --bg-hover:       #32444e;
+  --border:         #38434f;
+  --text-primary:   #e7e9ea;
+  --text-secondary: #b0b8bf;
+  --text-muted:     #8899a6;
+  --sidebar-bg:     #1d2226;
+  --sidebar-text:   #e7e9ea;
+  --sidebar-muted:  #8899a6;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-geist, system-ui, sans-serif);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
