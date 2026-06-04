@@ -1,10 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // src/routes/employees.ts  —  EMPLOYEE ROUTES
 //
-// Defines which URL + HTTP method maps to which controller function.
-// Think of routes as a traffic director — they receive the request
-// and hand it off to the right controller function.
-//
+// All routes are protected: require authentication + super_admin role.
 // Base path: /api/employees  (set in src/index.ts)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -17,14 +14,13 @@ import {
   deleteEmployee,
 } from '../controllers/employeeController';
 import { validateEmployee } from '../middleware/validate';
+import { authenticate }     from '../middleware/authenticate';
+import { requireRole }      from '../middleware/requireRole';
 
 const router = Router();
 
-// GET    /api/employees          → get all employees
-// POST   /api/employees          → create a new employee
-// GET    /api/employees/:id      → get one employee by id
-// PUT    /api/employees/:id      → update an employee
-// DELETE /api/employees/:id      → delete an employee
+// All employee routes require a valid token AND super_admin role
+router.use(authenticate, requireRole('super_admin'));
 
 router.get('/',     getAllEmployees);
 router.post('/',    validateEmployee, createEmployee);

@@ -15,6 +15,7 @@ import Attendance from '../models/Attendance';
 export async function getAllEmployees(req: Request, res: Response) {
   try {
     const employees = await Employee.findAll({
+      attributes: { exclude: ['passwordHash'] },
       include: [{ model: Department, as: 'department' }],
       order:   [['createdAt', 'DESC']],
     });
@@ -29,6 +30,7 @@ export async function getAllEmployees(req: Request, res: Response) {
 export async function getEmployeeById(req: Request, res: Response) {
   try {
     const employee = await Employee.findByPk(req.params.id, {
+      attributes: { exclude: ['passwordHash'] },
       include: [{ model: Department, as: 'department' }],
     });
     if (!employee) {
@@ -45,7 +47,9 @@ export async function getEmployeeById(req: Request, res: Response) {
 export async function createEmployee(req: Request, res: Response) {
   try {
     const employee = await Employee.create(req.body);
-    res.status(201).json(employee);
+    // Never return passwordHash in responses
+    const { passwordHash: _pw, ...safe } = employee.toJSON();
+    res.status(201).json(safe);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     // Handle duplicate email error
@@ -65,7 +69,8 @@ export async function updateEmployee(req: Request, res: Response) {
       return res.status(404).json({ error: 'Employee not found' });
     }
     await employee.update(req.body);
-    res.json(employee);
+    const { passwordHash: _pw, ...safe } = employee.toJSON();
+    res.json(safe);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     res.status(400).json({ error: 'Failed to update employee', details: message });

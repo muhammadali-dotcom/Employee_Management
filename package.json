@@ -12,5 +12,8 @@
     "install:frontend": "npm install --prefix FrontEnd",
     "install:backend": "npm install --prefix BackEnd",
     "install-all": "npm install && npm run install:frontend && npm run install:backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

@@ -19,6 +19,7 @@ interface EmployeeAttributes {
   departmentId: string | null;
   status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   joinDate:     string;
+  passwordHash: string | null;
   createdAt?:   Date;
   updatedAt?:   Date;
 }
@@ -36,6 +37,7 @@ class Employee extends Model<EmployeeAttributes, EmployeeCreationAttributes>
   declare departmentId: string | null;
   declare status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   declare joinDate:     string;
+  declare passwordHash: string | null;
   declare createdAt:    Date;
   declare updatedAt:    Date;
 }
@@ -87,6 +89,10 @@ Employee.init(
     joinDate: {
       type:      DataTypes.DATEONLY,  // stores only the date, no time (e.g. "2021-03-15")
       allowNull: false,
+    },
+    passwordHash: {
+      type:      DataTypes.STRING,
+      allowNull: true,   // null until super admin sets a password for the employee
     },
   },
   {

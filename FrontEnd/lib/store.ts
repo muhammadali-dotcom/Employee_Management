@@ -1,14 +1,26 @@
 'use client';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/store.ts  —  AUTHENTICATED API CALLS
+//
+// All functions now accept an optional `token` parameter and attach the
+// Authorization: Bearer header. Pages that call these should pass the
+// accessToken from AuthContext. When no token is passed the call goes
+// through unauthenticated (will 401 on protected routes — handled by callers).
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { Employee, Department, AttendanceRecord } from './types';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
-// Helper to handle response parsing
+function authHeaders(token?: string | null): HeadersInit {
+  const h: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = `Bearer ${token}`;
+  return h;
+}
+
 async function handleResponse<T>(response: Response, fallback: T): Promise<T> {
-  if (!response.ok) {
-    return fallback;
-  }
+  if (!response.ok) return fallback;
   try {
     return await response.json() as T;
   } catch {
@@ -18,9 +30,12 @@ async function handleResponse<T>(response: Response, fallback: T): Promise<T> {
 
 // ── Employees ──────────────────────────────────────────────────────────────
 
-export async function getEmployees(): Promise<Employee[]> {
+export async function getEmployees(token?: string | null): Promise<Employee[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/employees`);
+    const res = await fetch(`${API_BASE_URL}/employees`, {
+      headers: authHeaders(token),
+      credentials: 'include',
+    });
     return await handleResponse<Employee[]>(res, []);
   } catch (error) {
     console.error('Error fetching employees:', error);
@@ -28,9 +43,12 @@ export async function getEmployees(): Promise<Employee[]> {
   }
 }
 
-export async function getEmployee(id: string): Promise<Employee | undefined> {
+export async function getEmployee(id: string, token?: string | null): Promise<Employee | undefined> {
   try {
-    const res = await fetch(`${API_BASE_URL}/employees/${id}`);
+    const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
+      headers: authHeaders(token),
+      credentials: 'include',
+    });
     if (!res.ok) return undefined;
     return await res.json() as Employee;
   } catch (error) {
@@ -39,22 +57,24 @@ export async function getEmployee(id: string): Promise<Employee | undefined> {
   }
 }
 
-export async function saveEmployee(employee: Employee): Promise<void> {
+export async function saveEmployee(employee: Employee, token?: string | null): Promise<void> {
   try {
-    // Check if employee already exists to decide between POST and PUT
-    const checkRes = await fetch(`${API_BASE_URL}/employees/${employee.id}`);
+    const checkRes = await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
+      headers: authHeaders(token),
+      credentials: 'include',
+    });
     if (checkRes.ok) {
-      // Update
       await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(token),
+        credentials: 'include',
         body: JSON.stringify(employee),
       });
     } else {
-      // Create
       await fetch(`${API_BASE_URL}/employees`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(token),
+        credentials: 'include',
         body: JSON.stringify(employee),
       });
     }
@@ -63,10 +83,12 @@ export async function saveEmployee(employee: Employee): Promise<void> {
   }
 }
 
-export async function deleteEmployee(id: string): Promise<void> {
+export async function deleteEmployee(id: string, token?: string | null): Promise<void> {
   try {
     await fetch(`${API_BASE_URL}/employees/${id}`, {
       method: 'DELETE',
+      headers: authHeaders(token),
+      credentials: 'include',
     });
   } catch (error) {
     console.error(`Error deleting employee ${id}:`, error);
@@ -75,9 +97,12 @@ export async function deleteEmployee(id: string): Promise<void> {
 
 // ── Departments ────────────────────────────────────────────────────────────
 
-export async function getDepartments(): Promise<Department[]> {
+export async function getDepartments(token?: string | null): Promise<Department[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/departments`);
+    const res = await fetch(`${API_BASE_URL}/departments`, {
+      headers: authHeaders(token),
+      credentials: 'include',
+    });
     return await handleResponse<Department[]>(res, []);
   } catch (error) {
     console.error('Error fetching departments:', error);
@@ -85,22 +110,24 @@ export async function getDepartments(): Promise<Department[]> {
   }
 }
 
-export async function saveDepartment(dept: Department): Promise<void> {
+export async function saveDepartment(dept: Department, token?: string | null): Promise<void> {
   try {
-    // Check if department already exists to decide between POST and PUT
-    const checkRes = await fetch(`${API_BASE_URL}/departments/${dept.id}`);
+    const checkRes = await fetch(`${API_BASE_URL}/departments/${dept.id}`, {
+      headers: authHeaders(token),
+      credentials: 'include',
+    });
     if (checkRes.ok) {
-      // Update
       await fetch(`${API_BASE_URL}/departments/${dept.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(token),
+        credentials: 'include',
         body: JSON.stringify(dept),
       });
     } else {
-      // Create
       await fetch(`${API_BASE_URL}/departments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(token),
+        credentials: 'include',
         body: JSON.stringify(dept),
       });
     }
@@ -109,10 +136,12 @@ export async function saveDepartment(dept: Department): Promise<void> {
   }
 }
 
-export async function deleteDepartment(id: string): Promise<void> {
+export async function deleteDepartment(id: string, token?: string | null): Promise<void> {
   try {
     await fetch(`${API_BASE_URL}/departments/${id}`, {
       method: 'DELETE',
+      headers: authHeaders(token),
+      credentials: 'include',
     });
   } catch (error) {
     console.error(`Error deleting department ${id}:`, error);
@@ -121,25 +150,30 @@ export async function deleteDepartment(id: string): Promise<void> {
 
 // ── Attendance ─────────────────────────────────────────────────────────────
 
-export async function getAttendanceRecords(): Promise<AttendanceRecord[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/attendance`);
-    return await handleResponse<AttendanceRecord[]>(res, []);
-  } catch (error) {
-    console.error('Error fetching attendance records:', error);
-    return [];
+export async function getAttendanceRecords(token?: string | null, month?: string): Promise<AttendanceRecord[]> {
+  const url = month
+    ? `${API_BASE_URL}/attendance?month=${month}`
+    : `${API_BASE_URL}/attendance`;
+  const res = await fetch(url, {
+    headers:     authHeaders(token),
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Failed to fetch attendance (${res.status})`);
   }
+  return res.json() as Promise<AttendanceRecord[]>;
 }
 
-export async function saveAttendanceRecord(record: AttendanceRecord): Promise<void> {
-  try {
-    // The Express backend `/api/attendance` POST endpoint performs an upsert automatically
-    await fetch(`${API_BASE_URL}/attendance`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(record),
-    });
-  } catch (error) {
-    console.error('Error saving attendance record:', error);
+export async function saveAttendanceRecord(record: AttendanceRecord, token?: string | null): Promise<void> {
+  const res = await fetch(`${API_BASE_URL}/attendance`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    credentials: 'include',
+    body: JSON.stringify(record),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Failed to save attendance (${res.status})`);
   }
 }

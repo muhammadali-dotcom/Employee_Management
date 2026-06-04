@@ -6,6 +6,7 @@ import { Employee, EmployeeStatus } from '@/lib/types';
 import { Department } from '@/lib/types';
 import { saveEmployee } from '@/lib/store';
 import { generateId } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
@@ -34,6 +35,7 @@ interface FormErrors {
 
 export default function EmployeeForm({ employee, departments }: Props) {
   const router = useRouter();
+  const { accessToken } = useAuth();
   const isEdit = !!employee;
 
   const [form, setForm] = useState({
@@ -72,7 +74,7 @@ export default function EmployeeForm({ employee, departments }: Props) {
       id: employee?.id ?? generateId(),
       ...form,
     };
-    await saveEmployee(record);
+    await saveEmployee(record, accessToken);
     router.push('/employees');
   }
 

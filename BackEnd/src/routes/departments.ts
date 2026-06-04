@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // src/routes/departments.ts  —  DEPARTMENT ROUTES
 //
+// All routes are protected: require authentication + super_admin role.
 // Base path: /api/departments  (set in src/index.ts)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -13,14 +14,13 @@ import {
   deleteDepartment,
 } from '../controllers/departmentController';
 import { validateDepartment } from '../middleware/validate';
+import { authenticate }       from '../middleware/authenticate';
+import { requireRole }        from '../middleware/requireRole';
 
 const router = Router();
 
-// GET    /api/departments         → get all departments
-// POST   /api/departments         → create a new department
-// GET    /api/departments/:id     → get one department (with its employees)
-// PUT    /api/departments/:id     → rename/update a department
-// DELETE /api/departments/:id     → delete a department (unassigns employees)
+// All department routes require a valid token AND super_admin role
+router.use(authenticate, requireRole('super_admin'));
 
 router.get('/',       getAllDepartments);
 router.post('/',      validateDepartment, createDepartment);

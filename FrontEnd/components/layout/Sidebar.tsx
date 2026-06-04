@@ -1,20 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-  { href: '/employees', label: 'Employees', icon: '👥' },
-  { href: '/attendance', label: 'Attendance', icon: '📅' },
+const ADMIN_NAV = [
+  { href: '/dashboard',   label: 'Dashboard',   icon: '📊' },
+  { href: '/employees',   label: 'Employees',   icon: '👥' },
+  { href: '/attendance',  label: 'Attendance',  icon: '📅' },
   { href: '/departments', label: 'Departments', icon: '🏢' },
 ];
 
+const EMPLOYEE_NAV = [
+  { href: '/my-attendance', label: 'My Attendance', icon: '📅' },
+];
+
 export default function Sidebar() {
-  const pathname = usePathname();
+  const pathname         = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const { user, logout } = useAuth();
+  const router           = useRouter();
+  const isDark           = theme === 'dark';
+
+  const navItems = user?.role === 'super_admin' ? ADMIN_NAV : EMPLOYEE_NAV;
+
+  async function handleLogout() {
+    await logout();
+    router.replace('/login');
+  }
 
   return (
     <aside
@@ -70,11 +84,12 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* ── Dark mode toggle button at the bottom ────────────────── */}
+      {/* ── Bottom: dark mode + logout ────────────────────────────── */}
       <div
-        className="px-4 py-4 border-t"
+        className="px-4 py-4 border-t space-y-1"
         style={{ borderColor: 'rgba(255,255,255,0.1)' }}
       >
+        {/* Dark mode toggle */}
         <button
           onClick={toggleTheme}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all"
@@ -88,15 +103,8 @@ export default function Sidebar() {
           }
           aria-label="Toggle dark mode"
         >
-          {/* Icon */}
-          <span className="text-base">
-            {isDark ? '☀️' : '🌙'}
-          </span>
-
-          {/* Label */}
+          <span className="text-base">{isDark ? '☀️' : '🌙'}</span>
           <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-
-          {/* Pill indicator */}
           <span
             className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium"
             style={{
@@ -108,7 +116,25 @@ export default function Sidebar() {
           </span>
         </button>
 
-        <p className="text-xs mt-3 px-3" style={{ color: 'var(--sidebar-muted)' }}>
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all"
+          style={{ color: 'var(--sidebar-muted)' }}
+          onMouseEnter={(e) =>
+            ((e.currentTarget as HTMLElement).style.backgroundColor =
+              'rgba(255,100,100,0.15)')
+          }
+          onMouseLeave={(e) =>
+            ((e.currentTarget as HTMLElement).style.backgroundColor = 'transparent')
+          }
+          aria-label="Log out"
+        >
+          <span className="text-base">🚪</span>
+          <span>Log out</span>
+        </button>
+
+        <p className="text-xs mt-2 px-3" style={{ color: 'var(--sidebar-muted)' }}>
           v1.0.0
         </p>
       </div>

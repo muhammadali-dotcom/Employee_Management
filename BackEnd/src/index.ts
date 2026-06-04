@@ -11,13 +11,19 @@
 
 import express      from 'express';
 import cors         from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv       from 'dotenv';
+
+// Load .env FIRST — before any other module reads process.env
+dotenv.config();
+
 import sequelize    from './config/database';
 
 // Routes
 import employeeRoutes   from './routes/employees';
 import departmentRoutes from './routes/departments';
 import attendanceRoutes from './routes/attendance';
+import authRoutes       from './routes/auth';
 
 // Middleware
 import { notFound }     from './middleware/notFound';
@@ -28,8 +34,7 @@ import './models/Department';
 import './models/Employee';
 import './models/Attendance';
 
-// Load .env file
-dotenv.config();
+// Remove the old dotenv.config() call — it's now at the top before imports
 
 const app  = express();
 const PORT = process.env.PORT || 4000;
@@ -37,13 +42,18 @@ const PORT = process.env.PORT || 4000;
 // ── 1. Global Middleware ──────────────────────────────────────────────────────
 
 // Allow the Next.js frontend to call this server (CORS)
+// credentials: true is required so the browser sends the HttpOnly refresh cookie
 app.use(cors({
-  origin:  process.env.CLIENT_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  origin:      process.env.CLIENT_URL || 'http://localhost:3000',
+  methods:     ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,   // ← REQUIRED for cookies to be sent cross-origin
 }));
 
 // Parse incoming JSON request bodies → available as req.body
 app.use(express.json());
+
+// Parse cookies → available as req.cookies (needed for refresh token HttpOnly cookie)
+app.use(cookieParser());
 
 // ── 2. Routes ─────────────────────────────────────────────────────────────────
 
@@ -52,6 +62,7 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.use('/api/auth',       authRoutes);
 app.use('/api/employees',   employeeRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/attendance',  attendanceRoutes);

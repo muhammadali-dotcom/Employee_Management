@@ -10,9 +10,11 @@ import Modal from '@/components/ui/Modal';
 import { getEmployee, getDepartments, deleteEmployee } from '@/lib/store';
 import { Employee, Department } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 export default function EmployeeDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { accessToken } = useAuth();
   const router = useRouter();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -21,14 +23,14 @@ export default function EmployeeDetailPage() {
   useEffect(() => {
     async function loadData() {
       const [emp, deptList] = await Promise.all([
-        getEmployee(id),
-        getDepartments(),
+        getEmployee(id, accessToken),
+        getDepartments(accessToken),
       ]);
       setEmployee(emp ?? null);
       setDepartments(deptList);
     }
     loadData();
-  }, [id]);
+  }, [id, accessToken]);
 
   if (!employee) {
     return (
@@ -46,7 +48,7 @@ export default function EmployeeDetailPage() {
   const deptName = departments.find((d) => d.id === employee.departmentId)?.name ?? '—';
 
   async function handleDelete() {
-    await deleteEmployee(employee!.id);
+    await deleteEmployee(employee!.id, accessToken);
     router.push('/employees');
   }
 

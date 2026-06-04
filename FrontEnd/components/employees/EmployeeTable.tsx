@@ -12,6 +12,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Pagination from '@/components/ui/Pagination';
 import Modal from '@/components/ui/Modal';
+import { useAuth } from '@/context/AuthContext';
 
 const PAGE_SIZE = 10;
 
@@ -24,6 +25,7 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
 ];
 
 export default function EmployeeTable() {
+  const { accessToken } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [search, setSearch] = useState('');
@@ -36,21 +38,19 @@ export default function EmployeeTable() {
 
   const load = useCallback(async () => {
     const [empList, deptList] = await Promise.all([
-      getEmployees(),
-      getDepartments(),
+      getEmployees(accessToken),
+      getDepartments(accessToken),
     ]);
     setEmployees(empList);
     setDepartments(deptList);
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  // Derived: unique roles
   const roles = Array.from(new Set(employees.map((e) => e.role))).sort();
 
-  // Filter
   const filtered = employees.filter((e) => {
     const fullName = `${e.firstName} ${e.lastName}`.toLowerCase();
     if (search && !fullName.includes(search.toLowerCase())) return false;
@@ -73,14 +73,14 @@ export default function EmployeeTable() {
   async function handleStatusChange(empId: string, newStatus: EmployeeStatus) {
     const emp = employees.find((e) => e.id === empId);
     if (!emp) return;
-    await saveEmployee({ ...emp, status: newStatus });
+    await saveEmployee({ ...emp, status: newStatus }, accessToken);
     setStatusDropdown(null);
     await load();
   }
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await deleteEmployee(deleteTarget.id);
+    await deleteEmployee(deleteTarget.id, accessToken);
     setDeleteTarget(null);
     await load();
   }

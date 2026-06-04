@@ -9,6 +9,7 @@ import StatusBadge from '@/components/employees/StatusBadge';
 import { getEmployees, getDepartments } from '@/lib/store';
 import { Employee, EmployeeStatus, Department } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 // Config for each stat card
 const STAT_CONFIG: {
@@ -27,6 +28,7 @@ const STAT_CONFIG: {
 ];
 
 export default function DashboardPage() {
+  const { accessToken } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [activeFilter, setActiveFilter] = useState<EmployeeStatus | 'total' | null>(null);
@@ -34,14 +36,14 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadData() {
       const [empList, deptList] = await Promise.all([
-        getEmployees(),
-        getDepartments(),
+        getEmployees(accessToken),
+        getDepartments(accessToken),
       ]);
       setEmployees(empList);
       setDepartments(deptList);
     }
     loadData();
-  }, []);
+  }, [accessToken]);
 
   // Count per status
   const counts: Record<string, number> = { total: employees.length };

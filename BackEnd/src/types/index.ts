@@ -46,3 +46,25 @@ export interface CreateAttendanceInput {
   checkOut?:  string;
   note?:      string;
 }
+
+// ── Auth Types ────────────────────────────────────────────────────────────────
+
+export type UserRole = 'super_admin' | 'employee';
+
+// Payload stored inside the JWT access token
+export interface JwtPayload {
+  id:        string;
+  firstName: string;
+  lastName:  string;
+  email:     string;
+  role:      UserRole;
+}
+
+// Augment Express Request so TypeScript knows about req.user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JwtPayload;
+    }
+  }
+}

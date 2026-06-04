@@ -8,8 +8,10 @@ import Modal from '@/components/ui/Modal';
 import { getDepartments, saveDepartment, deleteDepartment, getEmployees } from '@/lib/store';
 import { Department, Employee } from '@/lib/types';
 import { generateId } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DepartmentsPage() {
+  const { accessToken } = useAuth();
   const [departments, setDepartments] = useState<Department[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newName, setNewName] = useState('');
@@ -22,14 +24,14 @@ export default function DepartmentsPage() {
 
   async function load() {
     const [deptList, empList] = await Promise.all([
-      getDepartments(),
-      getEmployees(),
+      getDepartments(accessToken),
+      getEmployees(accessToken),
     ]);
     setDepartments(deptList);
     setEmployees(empList);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [accessToken]);
 
   function getEmpCount(deptId: string) {
     return employees.filter((e) => e.departmentId === deptId).length;
@@ -40,7 +42,7 @@ export default function DepartmentsPage() {
     if (!newName.trim()) { setNameError('Name is required'); return; }
     const exists = departments.some((d) => d.name.toLowerCase() === newName.trim().toLowerCase());
     if (exists) { setNameError('A department with this name already exists'); return; }
-    await saveDepartment({ id: generateId(), name: newName.trim(), description: newDesc.trim(), createdAt: new Date().toISOString().split('T')[0] });
+    await saveDepartment({ id: generateId(), name: newName.trim(), description: newDesc.trim(), createdAt: new Date().toISOString().split('T')[0] }, accessToken);
     setNewName(''); setNewDesc(''); setNameError('');
     await load();
   }
@@ -51,14 +53,14 @@ export default function DepartmentsPage() {
     if (!editName.trim()) { setEditError('Name is required'); return; }
     const exists = departments.some((d) => d.id !== editTarget.id && d.name.toLowerCase() === editName.trim().toLowerCase());
     if (exists) { setEditError('A department with this name already exists'); return; }
-    await saveDepartment({ ...editTarget, name: editName.trim() });
+    await saveDepartment({ ...editTarget, name: editName.trim() }, accessToken);
     setEditTarget(null); setEditName(''); setEditError('');
     await load();
   }
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await deleteDepartment(deleteTarget.id);
+    await deleteDepartment(deleteTarget.id, accessToken);
     setDeleteTarget(null);
     await load();
   }

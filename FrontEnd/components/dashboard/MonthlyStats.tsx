@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { getAttendanceRecords } from '@/lib/store';
+import { useAuth } from '@/context/AuthContext';
 import StatsCard from './StatsCard';
 
 export default function MonthlyStats() {
+  const { accessToken } = useAuth();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
@@ -12,17 +14,21 @@ export default function MonthlyStats() {
 
   useEffect(() => {
     async function loadStats() {
-      const allRecords = await getAttendanceRecords();
-      const prefix = `${year}-${String(month).padStart(2, '0')}`;
-      const records = allRecords.filter((r) => r.date.startsWith(prefix));
-      const s = { present: 0, absent: 0, on_leave: 0, on_break: 0, late: 0 };
-      records.forEach((r) => {
-        if (r.status in s) s[r.status as keyof typeof s]++;
-      });
-      setStats(s);
+      if (!accessToken) return;
+      const monthStr = `${year}-${String(month).padStart(2, '0')}`;
+      try {
+        const records = await getAttendanceRecords(accessToken, monthStr);
+        const s = { present: 0, absent: 0, on_leave: 0, on_break: 0, late: 0 };
+        records.forEach((r) => {
+          if (r.status in s) s[r.status as keyof typeof s]++;
+        });
+        setStats(s);
+      } catch {
+        // silently ignore on dashboard — not critical
+      }
     }
     loadStats();
-  }, [year, month]);
+  }, [year, month, accessToken]);
 
   const monthLabel = new Date(year, month - 1, 1).toLocaleDateString('en-US', {
     month: 'long', year: 'numeric',
@@ -39,7 +45,6 @@ export default function MonthlyStats() {
 
   return (
     <div>
-      {/* Month selector */}
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={prevMonth}

@@ -5,17 +5,19 @@ import AppShell from '@/components/layout/AppShell';
 import EmployeeForm from '@/components/employees/EmployeeForm';
 import { getDepartments } from '@/lib/store';
 import { Department } from '@/lib/types';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NewEmployeePage() {
+  const { accessToken } = useAuth();
   const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
     async function loadDepts() {
-      const deptList = await getDepartments();
+      const deptList = await getDepartments(accessToken);
       setDepartments(deptList);
     }
     loadDepts();
-  }, []);
+  }, [accessToken]);
 
   return (
     <AppShell>
