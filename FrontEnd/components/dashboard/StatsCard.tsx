@@ -10,7 +10,7 @@ interface StatsCardProps {
   onClick?: () => void;
 }
 
-export default function StatsCard({ label, value, icon, iconBg, iconColor, active, onClick }: StatsCardProps) {
+const StatsCard = ({ label, value, icon, iconBg, iconColor, active, onClick }: StatsCardProps) => {
   return (
     <button
       onClick={onClick}
@@ -44,4 +44,6 @@ export default function StatsCard({ label, value, icon, iconBg, iconColor, activ
       )}
     </button>
   );
-}
+};
+
+export default StatsCard;

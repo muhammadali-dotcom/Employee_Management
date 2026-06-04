@@ -10,7 +10,7 @@ import { Department, Employee } from '@/lib/types';
 import { generateId } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 
-export default function DepartmentsPage() {
+const DepartmentsPage = () => {
   const { accessToken } = useAuth();
   const [departments, setDepartments] = useState<Department[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -22,7 +22,7 @@ export default function DepartmentsPage() {
   const [editError, setEditError] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Department | null>(null);
 
-  async function load() {
+  const load = async () => {
     const [deptList, empList] = await Promise.all([
       getDepartments(accessToken),
       getEmployees(accessToken),
@@ -33,11 +33,11 @@ export default function DepartmentsPage() {
 
   useEffect(() => { load(); }, [accessToken]);
 
-  function getEmpCount(deptId: string) {
+  const getEmpCount = (deptId: string) => {
     return employees.filter((e) => e.departmentId === deptId).length;
   }
 
-  async function handleAdd(e: React.FormEvent) {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName.trim()) { setNameError('Name is required'); return; }
     const exists = departments.some((d) => d.name.toLowerCase() === newName.trim().toLowerCase());
@@ -47,7 +47,7 @@ export default function DepartmentsPage() {
     await load();
   }
 
-  async function handleRename(e: React.FormEvent) {
+  const handleRename = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editTarget) return;
     if (!editName.trim()) { setEditError('Name is required'); return; }
@@ -58,7 +58,7 @@ export default function DepartmentsPage() {
     await load();
   }
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     if (!deleteTarget) return;
     await deleteDepartment(deleteTarget.id, accessToken);
     setDeleteTarget(null);
@@ -174,3 +174,5 @@ export default function DepartmentsPage() {
     </AppShell>
   );
 }
+
+export default DepartmentsPage;

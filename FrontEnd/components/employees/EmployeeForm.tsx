@@ -33,7 +33,7 @@ interface FormErrors {
   status?: string;
 }
 
-export default function EmployeeForm({ employee, departments }: Props) {
+const EmployeeForm = ({ employee, departments }: Props) => {
   const router = useRouter();
   const { accessToken } = useAuth();
   const isEdit = !!employee;
@@ -51,7 +51,7 @@ export default function EmployeeForm({ employee, departments }: Props) {
 
   const [errors, setErrors] = useState<FormErrors>({});
 
-  function validate(): boolean {
+  const validate = (): boolean => {
     const e: FormErrors = {};
     if (!form.firstName.trim()) e.firstName = 'First name is required';
     if (!form.lastName.trim()) e.lastName = 'Last name is required';
@@ -66,7 +66,7 @@ export default function EmployeeForm({ employee, departments }: Props) {
     return Object.keys(e).length === 0;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -164,3 +164,5 @@ export default function EmployeeForm({ employee, departments }: Props) {
     </form>
   );
 }
+
+export default EmployeeForm;

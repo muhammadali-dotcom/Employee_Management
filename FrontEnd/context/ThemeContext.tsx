@@ -14,7 +14,7 @@ const ThemeContext = createContext<ThemeContextValue>({
   toggleTheme: () => {},
 });
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>('light');
 
   // On first load, read saved preference from localStorage
@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  function toggleTheme() {
+  const toggleTheme = () => {
     const next: Theme = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
     localStorage.setItem('ems_theme', next);
@@ -42,6 +42,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 // Custom hook — any component can call useTheme() to get theme + toggleTheme
-export function useTheme() {
+export const useTheme = () => {
   return useContext(ThemeContext);
 }

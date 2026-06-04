@@ -12,7 +12,7 @@ import { Employee, Department } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 
-export default function EmployeeDetailPage() {
+const EmployeeDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { accessToken } = useAuth();
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function EmployeeDetailPage() {
   const [showDelete, setShowDelete] = useState(false);
 
   useEffect(() => {
-    async function loadData() {
+    const loadData = async () => {
       const [emp, deptList] = await Promise.all([
         getEmployee(id, accessToken),
         getDepartments(accessToken),
@@ -47,7 +47,7 @@ export default function EmployeeDetailPage() {
 
   const deptName = departments.find((d) => d.id === employee.departmentId)?.name ?? '—';
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     await deleteEmployee(employee!.id, accessToken);
     router.push('/employees');
   }
@@ -117,3 +117,5 @@ export default function EmployeeDetailPage() {
     </AppShell>
   );
 }
+
+export default EmployeeDetailPage;

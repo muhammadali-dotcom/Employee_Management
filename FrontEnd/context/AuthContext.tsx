@@ -41,7 +41,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 /** Decode the payload of a JWT without verifying the signature. */
-function decodeJwt(token: string): AuthUser | null {
+const decodeJwt = (token: string): AuthUser | null => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return {
@@ -56,14 +56,14 @@ function decodeJwt(token: string): AuthUser | null {
   }
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser]                   = useState<AuthUser | null>(null);
   const [accessToken, setAccessToken]     = useState<string | null>(null);
   const [isInitializing, setInitializing] = useState(true);
 
   // ── Silent refresh on mount (handles page reloads) ───────────────────────
   useEffect(() => {
-    async function tryRestore() {
+    const tryRestore = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/auth/refresh`, {
           method:      'POST',
@@ -160,7 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth(): AuthContextValue {
+export const useAuth = (): AuthContextValue => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
   return ctx;

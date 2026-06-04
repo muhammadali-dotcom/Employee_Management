@@ -13,13 +13,13 @@ import { Employee, Department, AttendanceRecord } from './types';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
-function authHeaders(token?: string | null): HeadersInit {
+const authHeaders = (token?: string | null): HeadersInit => {
   const h: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) h['Authorization'] = `Bearer ${token}`;
   return h;
 }
 
-async function handleResponse<T>(response: Response, fallback: T): Promise<T> {
+const handleResponse = async <T>(response: Response, fallback: T): Promise<T> => {
   if (!response.ok) return fallback;
   try {
     return await response.json() as T;
@@ -30,7 +30,7 @@ async function handleResponse<T>(response: Response, fallback: T): Promise<T> {
 
 // ── Employees ──────────────────────────────────────────────────────────────
 
-export async function getEmployees(token?: string | null): Promise<Employee[]> {
+export const getEmployees = async (token?: string | null): Promise<Employee[]> => {
   try {
     const res = await fetch(`${API_BASE_URL}/employees`, {
       headers: authHeaders(token),
@@ -43,7 +43,7 @@ export async function getEmployees(token?: string | null): Promise<Employee[]> {
   }
 }
 
-export async function getEmployee(id: string, token?: string | null): Promise<Employee | undefined> {
+export const getEmployee = async (id: string, token?: string | null): Promise<Employee | undefined> => {
   try {
     const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
       headers: authHeaders(token),
@@ -57,7 +57,7 @@ export async function getEmployee(id: string, token?: string | null): Promise<Em
   }
 }
 
-export async function saveEmployee(employee: Employee, token?: string | null): Promise<void> {
+export const saveEmployee = async (employee: Employee, token?: string | null): Promise<void> => {
   try {
     const checkRes = await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
       headers: authHeaders(token),
@@ -83,7 +83,7 @@ export async function saveEmployee(employee: Employee, token?: string | null): P
   }
 }
 
-export async function deleteEmployee(id: string, token?: string | null): Promise<void> {
+export const deleteEmployee = async (id: string, token?: string | null): Promise<void> => {
   try {
     await fetch(`${API_BASE_URL}/employees/${id}`, {
       method: 'DELETE',
@@ -97,7 +97,7 @@ export async function deleteEmployee(id: string, token?: string | null): Promise
 
 // ── Departments ────────────────────────────────────────────────────────────
 
-export async function getDepartments(token?: string | null): Promise<Department[]> {
+export const getDepartments = async (token?: string | null): Promise<Department[]> => {
   try {
     const res = await fetch(`${API_BASE_URL}/departments`, {
       headers: authHeaders(token),
@@ -110,7 +110,7 @@ export async function getDepartments(token?: string | null): Promise<Department[
   }
 }
 
-export async function saveDepartment(dept: Department, token?: string | null): Promise<void> {
+export const saveDepartment = async (dept: Department, token?: string | null): Promise<void> => {
   try {
     const checkRes = await fetch(`${API_BASE_URL}/departments/${dept.id}`, {
       headers: authHeaders(token),
@@ -136,7 +136,7 @@ export async function saveDepartment(dept: Department, token?: string | null): P
   }
 }
 
-export async function deleteDepartment(id: string, token?: string | null): Promise<void> {
+export const deleteDepartment = async (id: string, token?: string | null): Promise<void> => {
   try {
     await fetch(`${API_BASE_URL}/departments/${id}`, {
       method: 'DELETE',
@@ -150,7 +150,7 @@ export async function deleteDepartment(id: string, token?: string | null): Promi
 
 // ── Attendance ─────────────────────────────────────────────────────────────
 
-export async function getAttendanceRecords(token?: string | null, month?: string): Promise<AttendanceRecord[]> {
+export const getAttendanceRecords = async (token?: string | null, month?: string): Promise<AttendanceRecord[]> => {
   const url = month
     ? `${API_BASE_URL}/attendance?month=${month}`
     : `${API_BASE_URL}/attendance`;
@@ -165,7 +165,7 @@ export async function getAttendanceRecords(token?: string | null, month?: string
   return res.json() as Promise<AttendanceRecord[]>;
 }
 
-export async function saveAttendanceRecord(record: AttendanceRecord, token?: string | null): Promise<void> {
+export const saveAttendanceRecord = async (record: AttendanceRecord, token?: string | null): Promise<void> => {
   const res = await fetch(`${API_BASE_URL}/attendance`, {
     method: 'POST',
     headers: authHeaders(token),

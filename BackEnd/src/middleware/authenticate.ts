@@ -11,7 +11,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from '../types';
 
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
+export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

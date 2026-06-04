@@ -9,7 +9,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from '../types';
 
-export function requireRole(role: UserRole) {
+export const requireRole = (role: UserRole) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({ error: 'Authentication required' });

@@ -2,7 +2,7 @@ import Sidebar    from './Sidebar';
 import Header     from './Header';
 import RouteGuard from '@/components/auth/RouteGuard';
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+const AppShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <RouteGuard>
       <div
@@ -17,4 +17,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </div>
     </RouteGuard>
   );
-}
+};
+
+export default AppShell;

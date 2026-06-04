@@ -15,17 +15,17 @@ const STATUS_OPTIONS: AttendanceStatus[] = [
   'present', 'absent', 'on_leave', 'on_break', 'late',
 ];
 
-function todayStr(): string {
+const todayStr = (): string => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function currentMonthStr(): string {
+const currentMonthStr = (): string => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-export default function MyAttendancePage() {
+const MyAttendancePage = () => {
   const { user, accessToken } = useAuth();
 
   const [todayRecord,    setTodayRecord]    = useState<AttendanceRecord | null>(null);
@@ -57,7 +57,7 @@ export default function MyAttendancePage() {
     loadAttendance();
   }, [loadAttendance]);
 
-  async function handleStatusChange(status: AttendanceStatus) {
+  const handleStatusChange = async (status: AttendanceStatus) => {
     if (!user || !accessToken) return;
 
     // Optimistically update the UI immediately
@@ -188,3 +188,5 @@ export default function MyAttendancePage() {
     </AppShell>
   );
 }
+
+export default MyAttendancePage;

@@ -22,7 +22,7 @@ interface RouteGuardProps {
   children: ReactNode;
 }
 
-export default function RouteGuard({ children }: RouteGuardProps) {
+const RouteGuard = ({ children }: RouteGuardProps) => {
   const { user, isInitializing } = useAuth();
   const router   = useRouter();
   const pathname = usePathname();
@@ -74,4 +74,6 @@ export default function RouteGuard({ children }: RouteGuardProps) {
   if (!user && !isPublic) return null;
 
   return <>{children}</>;
-}
+};
+
+export default RouteGuard;

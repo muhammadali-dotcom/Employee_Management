@@ -23,7 +23,7 @@ const SUPER_ADMIN_FIRSTNAME = 'Super';
 const SUPER_ADMIN_LASTNAME  = 'Admin';
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function main() {
+const main = async () => {
   await sequelize.authenticate();
   await sequelize.sync({ alter: true });
 

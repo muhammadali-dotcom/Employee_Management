@@ -27,14 +27,14 @@ const STAT_CONFIG: {
   { key: 'inactive', label: 'Inactive',         icon: '⏸️', iconBg: '#f3f4f6', iconColor: '#6b7280' },
 ];
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   const { accessToken } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [activeFilter, setActiveFilter] = useState<EmployeeStatus | 'total' | null>(null);
 
   useEffect(() => {
-    async function loadData() {
+    const loadData = async () => {
       const [empList, deptList] = await Promise.all([
         getEmployees(accessToken),
         getDepartments(accessToken),
@@ -59,11 +59,11 @@ export default function DashboardPage() {
       ? employees
       : employees.filter((e) => e.status === activeFilter);
 
-  function getDeptName(id: string) {
+  const getDeptName = (id: string) => {
     return departments.find((d) => d.id === id)?.name ?? '—';
   }
 
-  function handleCardClick(key: EmployeeStatus | 'total') {
+  const handleCardClick = (key: EmployeeStatus | 'total') => {
     // clicking the same card again closes the drawer
     setActiveFilter((prev) => (prev === key ? null : key));
   }
@@ -202,3 +202,5 @@ export default function DashboardPage() {
     </AppShell>
   );
 }
+
+export default DashboardPage;

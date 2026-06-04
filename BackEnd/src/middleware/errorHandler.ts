@@ -8,13 +8,13 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-export function errorHandler(
+export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction   // must be here even if unused — Express requires 4 params
-) {
+) => {
   console.error('Unhandled error:', err.message);
 
   // Don't expose internal error details in production

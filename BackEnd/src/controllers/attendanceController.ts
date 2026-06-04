@@ -14,7 +14,7 @@ import Employee from '../models/Employee';
 // GET /api/attendance?month=2026-06&employeeId=xxx
 // super_admin → returns all records (filtered by query params if provided)
 // employee    → always filtered to their own records only
-export async function getAllAttendance(req: Request, res: Response) {
+export const getAllAttendance = async (req: Request, res: Response) => {
   try {
     const { month, employeeId } = req.query;
     const user = req.user!;
@@ -56,7 +56,7 @@ export async function getAllAttendance(req: Request, res: Response) {
 
 // POST /api/attendance
 // Employees can only submit attendance for themselves
-export async function upsertAttendance(req: Request, res: Response) {
+export const upsertAttendance = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     const { employeeId, date, status, checkIn, checkOut, note } = req.body;
@@ -100,7 +100,7 @@ export async function upsertAttendance(req: Request, res: Response) {
 
 // DELETE /api/attendance/:id
 // Only super_admin can delete records
-export async function deleteAttendance(req: Request, res: Response) {
+export const deleteAttendance = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 

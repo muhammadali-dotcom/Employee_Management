@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Manage your team with ease',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" className={geist.variable}>
       <body className="min-h-screen antialiased">
@@ -23,4 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

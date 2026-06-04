@@ -74,7 +74,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ── Start Server ──────────────────────────────────────────────────────────────
-async function start() {
+const start = async () => {
   // Start Express server immediately
   app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);

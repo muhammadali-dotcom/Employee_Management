@@ -5,7 +5,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export default function Input({ label, error, className = '', id, ...props }: InputProps) {
+const Input = ({ label, error, className = '', id, ...props }: InputProps) => {
   return (
     <div className="flex flex-col gap-1">
       {label && (
@@ -23,4 +23,6 @@ export default function Input({ label, error, className = '', id, ...props }: In
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
-}
+};
+
+export default Input;

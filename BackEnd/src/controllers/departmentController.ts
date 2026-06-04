@@ -7,7 +7,7 @@ import Department from '../models/Department';
 import Employee from '../models/Employee';
 
 // GET /api/departments
-export async function getAllDepartments(req: Request, res: Response) {
+export const getAllDepartments = async (req: Request, res: Response) => {
   try {
     const departments = await Department.findAll({
       order: [['name', 'ASC']],
@@ -19,7 +19,7 @@ export async function getAllDepartments(req: Request, res: Response) {
 }
 
 // GET /api/departments/:id
-export async function getDepartmentById(req: Request, res: Response) {
+export const getDepartmentById = async (req: Request, res: Response) => {
   try {
     const department = await Department.findByPk(req.params.id, {
       include: [{ model: Employee, as: 'employees' }],
@@ -34,7 +34,7 @@ export async function getDepartmentById(req: Request, res: Response) {
 }
 
 // POST /api/departments
-export async function createDepartment(req: Request, res: Response) {
+export const createDepartment = async (req: Request, res: Response) => {
   try {
     const department = await Department.create(req.body);
     res.status(201).json(department);
@@ -47,7 +47,7 @@ export async function createDepartment(req: Request, res: Response) {
 }
 
 // PUT /api/departments/:id
-export async function updateDepartment(req: Request, res: Response) {
+export const updateDepartment = async (req: Request, res: Response) => {
   try {
     const department = await Department.findByPk(req.params.id);
     if (!department) {
@@ -65,7 +65,7 @@ export async function updateDepartment(req: Request, res: Response) {
 
 // DELETE /api/departments/:id
 // Unassigns all employees from this department before deleting
-export async function deleteDepartment(req: Request, res: Response) {
+export const deleteDepartment = async (req: Request, res: Response) => {
   try {
     const department = await Department.findByPk(req.params.id);
     if (!department) {

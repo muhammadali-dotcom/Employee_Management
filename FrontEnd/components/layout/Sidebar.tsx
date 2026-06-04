@@ -16,7 +16,7 @@ const EMPLOYEE_NAV = [
   { href: '/my-attendance', label: 'My Attendance', icon: '📅' },
 ];
 
-export default function Sidebar() {
+const Sidebar = () => {
   const pathname         = usePathname();
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
@@ -25,7 +25,7 @@ export default function Sidebar() {
 
   const navItems = user?.role === 'super_admin' ? ADMIN_NAV : EMPLOYEE_NAV;
 
-  async function handleLogout() {
+  const handleLogout = async () => {
     await logout();
     router.replace('/login');
   }
@@ -141,3 +141,5 @@ export default function Sidebar() {
     </aside>
   );
 }
+
+export default Sidebar;

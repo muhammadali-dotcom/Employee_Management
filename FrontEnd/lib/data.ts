@@ -24,7 +24,7 @@ export const employees: Employee[] = [
   { id: 'e12', firstName: 'Leo', lastName: 'Jackson', email: 'leo@company.com', phone: '555-0112', role: 'Finance Analyst', departmentId: 'd5', status: 'on_leave', joinDate: '2020-10-08' },
 ];
 
-function generateAttendance(): AttendanceRecord[] {
+const generateAttendance = (): AttendanceRecord[] => {
   const records: AttendanceRecord[] = [];
   const today = new Date();
   const year = today.getFullYear();

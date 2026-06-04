@@ -5,7 +5,7 @@ import { getAttendanceRecords } from '@/lib/store';
 import { useAuth } from '@/context/AuthContext';
 import StatsCard from './StatsCard';
 
-export default function MonthlyStats() {
+const MonthlyStats = () => {
   const { accessToken } = useAuth();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -13,7 +13,7 @@ export default function MonthlyStats() {
   const [stats, setStats] = useState({ present: 0, absent: 0, on_leave: 0, on_break: 0, late: 0 });
 
   useEffect(() => {
-    async function loadStats() {
+    const loadStats = async () => {
       if (!accessToken) return;
       const monthStr = `${year}-${String(month).padStart(2, '0')}`;
       try {
@@ -34,11 +34,11 @@ export default function MonthlyStats() {
     month: 'long', year: 'numeric',
   });
 
-  function prevMonth() {
+  const prevMonth = () => {
     if (month === 1) { setMonth(12); setYear(year - 1); }
     else setMonth(month - 1);
   }
-  function nextMonth() {
+  const nextMonth = () => {
     if (month === 12) { setMonth(1); setYear(year + 1); }
     else setMonth(month + 1);
   }
@@ -71,3 +71,5 @@ export default function MonthlyStats() {
     </div>
   );
 }
+
+export default MonthlyStats;

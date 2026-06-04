@@ -23,15 +23,15 @@ export type ApiClientOptions = RequestInit & {
  * Creates an API client bound to the current auth state.
  * Call this inside a component/hook that has access to AuthContext.
  */
-export function createApiClient(
+export const createApiClient = (
   getToken:    () => string | null,
   refreshToken: () => Promise<string | null>,
   onAuthFailure: () => void,
-) {
-  async function request<T = unknown>(
+) => {
+  const request = async <T = unknown>(
     path: string,
     options: ApiClientOptions = {},
-  ): Promise<T> {
+  ): Promise<T> => {
     const { skipAuth, ...fetchOptions } = options;
 
     const headers: Record<string, string> = {

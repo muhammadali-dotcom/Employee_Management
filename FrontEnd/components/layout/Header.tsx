@@ -12,14 +12,14 @@ const PAGE_TITLES: Record<string, string> = {
   '/my-attendance': 'My Attendance',
 };
 
-function getTitle(pathname: string): string {
+const getTitle = (pathname: string): string => {
   if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
   if (pathname.startsWith('/employees/') && pathname.endsWith('/edit')) return 'Edit Employee';
   if (pathname.startsWith('/employees/')) return 'Employee Profile';
   return 'Employee Management';
 }
 
-export default function Header() {
+const Header = () => {
   const pathname = usePathname();
   const { user } = useAuth();
   const title = getTitle(pathname);
@@ -62,3 +62,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default Header;

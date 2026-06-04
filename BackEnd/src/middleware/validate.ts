@@ -10,7 +10,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 // ── Employee validation ───────────────────────────────────────────────────────
-export function validateEmployee(req: Request, res: Response, next: NextFunction) {
+export const validateEmployee = (req: Request, res: Response, next: NextFunction) => {
   const { firstName, lastName, email, role, joinDate } = req.body;
   const errors: string[] = [];
 
@@ -35,7 +35,7 @@ export function validateEmployee(req: Request, res: Response, next: NextFunction
 }
 
 // ── Department validation ─────────────────────────────────────────────────────
-export function validateDepartment(req: Request, res: Response, next: NextFunction) {
+export const validateDepartment = (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.body;
   const errors: string[] = [];
 
@@ -49,7 +49,7 @@ export function validateDepartment(req: Request, res: Response, next: NextFuncti
 }
 
 // ── Attendance validation ─────────────────────────────────────────────────────
-export function validateAttendance(req: Request, res: Response, next: NextFunction) {
+export const validateAttendance = (req: Request, res: Response, next: NextFunction) => {
   const { employeeId, date, status } = req.body;
   const errors: string[] = [];
 

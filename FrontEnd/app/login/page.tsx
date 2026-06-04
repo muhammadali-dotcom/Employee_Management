@@ -12,7 +12,7 @@ import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
-export default function LoginPage() {
+const LoginPage = () => {
   const { login, user } = useAuth();
   const router = useRouter();
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  function validate(): boolean {
+  const validate = (): boolean => {
     let valid = true;
     setEmailErr('');
     setPasswordErr('');
@@ -53,7 +53,7 @@ export default function LoginPage() {
     return valid;
   }
 
-  async function handleSubmit(e: FormEvent) {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -206,3 +206,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;

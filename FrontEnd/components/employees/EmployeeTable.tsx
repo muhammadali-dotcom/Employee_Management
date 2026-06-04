@@ -24,7 +24,7 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
   })),
 ];
 
-export default function EmployeeTable() {
+const EmployeeTable = () => {
   const { accessToken } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -63,14 +63,14 @@ export default function EmployeeTable() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  function handleFilterChange(setter: (v: string) => void) {
+  const handleFilterChange = (setter: (v: string) => void) => {
     return (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
       setter(e.target.value);
       setPage(1);
     };
   }
 
-  async function handleStatusChange(empId: string, newStatus: EmployeeStatus) {
+  const handleStatusChange = async (empId: string, newStatus: EmployeeStatus) => {
     const emp = employees.find((e) => e.id === empId);
     if (!emp) return;
     await saveEmployee({ ...emp, status: newStatus }, accessToken);
@@ -78,14 +78,14 @@ export default function EmployeeTable() {
     await load();
   }
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     if (!deleteTarget) return;
     await deleteEmployee(deleteTarget.id, accessToken);
     setDeleteTarget(null);
     await load();
   }
 
-  function getDeptName(id: string) {
+  const getDeptName = (id: string) => {
     return departments.find((d) => d.id === id)?.name ?? '—';
   }
 
@@ -225,3 +225,5 @@ export default function EmployeeTable() {
     </div>
   );
 }
+
+export default EmployeeTable;

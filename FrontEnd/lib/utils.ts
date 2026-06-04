@@ -1,12 +1,12 @@
 import { EmployeeStatus, AttendanceStatus } from './types';
 
-export function formatDate(dateStr: string): string {
+export const formatDate = (dateStr: string): string => {
   if (!dateStr) return '\u2014';
   const d = new Date(dateStr + 'T00:00:00');
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export function generateId(): string {
+export const generateId = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;

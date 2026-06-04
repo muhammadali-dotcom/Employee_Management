@@ -7,7 +7,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
 }
 
-export default function Select({ label, error, options, placeholder, className = '', id, ...props }: SelectProps) {
+const Select = ({ label, error, options, placeholder, className = '', id, ...props }: SelectProps) => {
   return (
     <div className="flex flex-col gap-1">
       {label && (
@@ -32,4 +32,6 @@ export default function Select({ label, error, options, placeholder, className =
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
-}
+};
+
+export default Select;

@@ -13,7 +13,7 @@ interface ModalProps {
   danger?: boolean;
 }
 
-export default function Modal({
+const Modal = ({
   open,
   title,
   message,
@@ -22,7 +22,7 @@ export default function Modal({
   onConfirm,
   onCancel,
   danger = false,
-}: ModalProps) {
+}: ModalProps) => {
   if (!open) return null;
 
   return (
@@ -44,4 +44,6 @@ export default function Modal({
       </div>
     </div>
   );
-}
+};
+
+export default Modal;

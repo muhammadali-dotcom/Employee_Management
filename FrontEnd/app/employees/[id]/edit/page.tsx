@@ -15,7 +15,7 @@ import { createApiClient } from '@/lib/api';
 
 // ── Set Password Section ──────────────────────────────────────────────────────
 
-function SetPasswordSection({ employeeId }: { employeeId: string }) {
+const SetPasswordSection = ({ employeeId }: { employeeId: string }) => {
   const { accessToken, refreshAccessToken, logout } = useAuth();
   const router = useRouter();
 
@@ -34,7 +34,7 @@ function SetPasswordSection({ employeeId }: { employeeId: string }) {
     [accessToken, refreshAccessToken, logout, router],
   );
 
-  async function handleSetPassword(e: FormEvent) {
+  const handleSetPassword = async (e: FormEvent) => {
     e.preventDefault();
     setPwError('');
     setPwSuccess('');
@@ -92,14 +92,14 @@ function SetPasswordSection({ employeeId }: { employeeId: string }) {
 
 // ── Edit Employee Page ────────────────────────────────────────────────────────
 
-export default function EditEmployeePage() {
+const EditEmployeePage = () => {
   const { id } = useParams<{ id: string }>();
   const { accessToken } = useAuth();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
-    async function loadData() {
+    const loadData = async () => {
       const [emp, deptList] = await Promise.all([
         getEmployee(id, accessToken),
         getDepartments(accessToken),
@@ -135,3 +135,5 @@ export default function EditEmployeePage() {
     </AppShell>
   );
 }
+
+export default EditEmployeePage;

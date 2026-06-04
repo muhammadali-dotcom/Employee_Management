@@ -11,36 +11,36 @@ import Employee from '../models/Employee';
 import { JwtPayload } from '../types';
 
 const BCRYPT_ROUNDS = 12;
-const ACCESS_TOKEN_TTL  = '15m';
+const ACCESS_TOKEN_TTL = '180m';
 const REFRESH_TOKEN_TTL = '7d';
 
 // ── Helper: sign tokens ───────────────────────────────────────────────────────
 
-function signAccessToken(payload: JwtPayload): string {
+const signAccessToken = (payload: JwtPayload): string => {
   const secret = process.env.JWT_ACCESS_SECRET;
   if (!secret) throw new Error('JWT_ACCESS_SECRET not configured');
   return jwt.sign(payload, secret, { expiresIn: ACCESS_TOKEN_TTL });
 }
 
-function signRefreshToken(id: string): string {
+const signRefreshToken = (id: string): string => {
   const secret = process.env.JWT_REFRESH_SECRET;
   if (!secret) throw new Error('JWT_REFRESH_SECRET not configured');
   return jwt.sign({ id }, secret, { expiresIn: REFRESH_TOKEN_TTL });
 }
 
-function setRefreshCookie(res: Response, token: string) {
+const setRefreshCookie = (res: Response, token: string) => {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     sameSite: 'strict',
-    secure:   process.env.NODE_ENV === 'production',
-    maxAge:   7 * 24 * 60 * 60 * 1000, // 7 days in ms
-    path:     '/api/auth',              // cookie only sent to /api/auth routes
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+    path: '/api/auth',              // cookie only sent to /api/auth routes
   });
 }
 
 // ── POST /api/auth/login ──────────────────────────────────────────────────────
 
-export async function login(req: Request, res: Response): Promise<void> {
+export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   // Basic field validation
@@ -75,14 +75,14 @@ export async function login(req: Request, res: Response): Promise<void> {
     const role = employee.role === 'super_admin' ? 'super_admin' : 'employee';
 
     const payload: JwtPayload = {
-      id:        employee.id,
+      id: employee.id,
       firstName: employee.firstName,
-      lastName:  employee.lastName,
-      email:     employee.email,
+      lastName: employee.lastName,
+      email: employee.email,
       role,
     };
 
-    const accessToken  = signAccessToken(payload);
+    const accessToken = signAccessToken(payload);
     const refreshToken = signRefreshToken(employee.id);
 
     setRefreshCookie(res, refreshToken);
@@ -98,7 +98,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
 // ── POST /api/auth/refresh ────────────────────────────────────────────────────
 
-export async function refresh(req: Request, res: Response): Promise<void> {
+export const refresh = async (req: Request, res: Response): Promise<void> => {
   const token = req.cookies?.refreshToken;
 
   if (!token) {
@@ -125,10 +125,10 @@ export async function refresh(req: Request, res: Response): Promise<void> {
     const role = employee.role === 'super_admin' ? 'super_admin' : 'employee';
 
     const payload: JwtPayload = {
-      id:        employee.id,
+      id: employee.id,
       firstName: employee.firstName,
-      lastName:  employee.lastName,
-      email:     employee.email,
+      lastName: employee.lastName,
+      email: employee.email,
       role,
     };
 
@@ -142,7 +142,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
 
 // ── POST /api/auth/logout ─────────────────────────────────────────────────────
 
-export async function logout(_req: Request, res: Response): Promise<void> {
+export const logout = async (_req: Request, res: Response): Promise<void> => {
   res.clearCookie('refreshToken', { path: '/api/auth' });
   res.json({ message: 'Logged out successfully' });
 }
@@ -150,7 +150,7 @@ export async function logout(_req: Request, res: Response): Promise<void> {
 // ── POST /api/auth/set-password ───────────────────────────────────────────────
 // Requires: authenticate + requireRole('super_admin')
 
-export async function setPassword(req: Request, res: Response): Promise<void> {
+export const setPassword = async (req: Request, res: Response): Promise<void> => {
   const { employeeId, newPassword } = req.body;
 
   if (!employeeId || !newPassword) {

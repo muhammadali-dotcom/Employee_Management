@@ -17,7 +17,7 @@ const ATTENDANCE_OPTIONS: { value: AttendanceStatus; label: string }[] = [
   { value: 'late',     label: 'Late'     },
 ];
 
-function getWeekdays(year: number, month: number): string[] {
+const getWeekdays = (year: number, month: number): string[] => {
   const days: string[] = [];
   const daysInMonth = new Date(year, month, 0).getDate();
   for (let d = 1; d <= daysInMonth; d++) {
@@ -31,7 +31,7 @@ function getWeekdays(year: number, month: number): string[] {
   return days;
 }
 
-export default function AttendancePage() {
+const AttendancePage = () => {
   const { accessToken } = useAuth();
   const now = new Date();
 
@@ -72,11 +72,11 @@ export default function AttendancePage() {
     return true;
   });
 
-  function getRecord(empId: string, date: string): AttendanceRecord | undefined {
+  const getRecord = (empId: string, date: string): AttendanceRecord | undefined => {
     return records.find((r) => r.employeeId === empId && r.date === date);
   }
 
-  async function handleMark(empId: string, date: string, status: AttendanceStatus) {
+  const handleMark = async (empId: string, date: string, status: AttendanceStatus) => {
     const existing = getRecord(empId, date);
     try {
       await saveAttendanceRecord(
@@ -89,12 +89,12 @@ export default function AttendancePage() {
     }
   }
 
-  function prevMonth() {
+  const prevMonth = () => {
     if (month === 1) { setMonth(12); setYear(year - 1); }
     else setMonth(month - 1);
   }
 
-  function nextMonth() {
+  const nextMonth = () => {
     if (month === 12) { setMonth(1); setYear(year + 1); }
     else setMonth(month + 1);
   }
@@ -219,3 +219,5 @@ export default function AttendancePage() {
     </AppShell>
   );
 }
+
+export default AttendancePage;

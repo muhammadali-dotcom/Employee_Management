@@ -12,7 +12,7 @@ import Attendance from '../models/Attendance';
 
 // GET /api/employees
 // Returns all employees, each with their department info included
-export async function getAllEmployees(req: Request, res: Response) {
+export const getAllEmployees = async (req: Request, res: Response) => {
   try {
     const employees = await Employee.findAll({
       attributes: { exclude: ['passwordHash'] },
@@ -27,7 +27,7 @@ export async function getAllEmployees(req: Request, res: Response) {
 
 // GET /api/employees/:id
 // Returns one employee by their ID
-export async function getEmployeeById(req: Request, res: Response) {
+export const getEmployeeById = async (req: Request, res: Response) => {
   try {
     const employee = await Employee.findByPk(req.params.id, {
       attributes: { exclude: ['passwordHash'] },
@@ -44,7 +44,7 @@ export async function getEmployeeById(req: Request, res: Response) {
 
 // POST /api/employees
 // Creates a new employee
-export async function createEmployee(req: Request, res: Response) {
+export const createEmployee = async (req: Request, res: Response) => {
   try {
     const employee = await Employee.create(req.body);
     // Never return passwordHash in responses
@@ -62,7 +62,7 @@ export async function createEmployee(req: Request, res: Response) {
 
 // PUT /api/employees/:id
 // Updates an existing employee
-export async function updateEmployee(req: Request, res: Response) {
+export const updateEmployee = async (req: Request, res: Response) => {
   try {
     const employee = await Employee.findByPk(req.params.id);
     if (!employee) {
@@ -79,7 +79,7 @@ export async function updateEmployee(req: Request, res: Response) {
 
 // DELETE /api/employees/:id
 // Deletes an employee and all their attendance records
-export async function deleteEmployee(req: Request, res: Response) {
+export const deleteEmployee = async (req: Request, res: Response) => {
   try {
     const employee = await Employee.findByPk(req.params.id);
     if (!employee) {

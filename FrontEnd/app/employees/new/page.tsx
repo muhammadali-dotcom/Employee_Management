@@ -7,12 +7,12 @@ import { getDepartments } from '@/lib/store';
 import { Department } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 
-export default function NewEmployeePage() {
+const NewEmployeePage = () => {
   const { accessToken } = useAuth();
   const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
-    async function loadDepts() {
+    const loadDepts = async () => {
       const deptList = await getDepartments(accessToken);
       setDepartments(deptList);
     }
@@ -28,3 +28,5 @@ export default function NewEmployeePage() {
     </AppShell>
   );
 }
+
+export default NewEmployeePage;

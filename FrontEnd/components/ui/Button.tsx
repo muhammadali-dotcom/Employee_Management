@@ -21,14 +21,14 @@ const sizeClasses: Record<Size, string> = {
   lg: 'px-5 py-2.5 text-base',
 };
 
-export default function Button({
+const Button = ({
   variant = 'primary',
   size = 'md',
   className = '',
   children,
   disabled,
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
       {...props}
@@ -38,4 +38,6 @@ export default function Button({
       {children}
     </button>
   );
-}
+};
+
+export default Button;
