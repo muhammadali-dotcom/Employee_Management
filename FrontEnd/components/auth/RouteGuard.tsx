@@ -43,7 +43,7 @@ const RouteGuard = ({ children }: RouteGuardProps) => {
 
     // Already logged in, on the login page — redirect to home
     if (isPublic) {
-      router.replace(user.role === 'super_admin' ? '/attendance' : '/my-attendance');
+      router.replace(user.role === 'super_admin' ? '/dashboard' : '/my-attendance');
       return;
     }
 
@@ -55,7 +55,7 @@ const RouteGuard = ({ children }: RouteGuardProps) => {
 
     // Super admin trying to access employee-only route
     if (user.role === 'super_admin' && isEmployee) {
-      router.replace('/attendance');
+      router.replace('/dashboard');
       return;
     }
   }, [user, isInitializing, pathname, router]);

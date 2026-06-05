@@ -28,7 +28,7 @@ const LoginPage = () => {
   // If already logged in, redirect immediately
   useEffect(() => {
     if (user) {
-      router.replace(user.role === 'super_admin' ? '/attendance' : '/my-attendance');
+      router.replace(user.role === 'super_admin' ? '/dashboard' : '/my-attendance');
     }
   }, [user, router]);
 
