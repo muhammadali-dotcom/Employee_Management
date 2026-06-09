@@ -19,6 +19,9 @@ export interface Employee {
   departmentId: string;
   status: EmployeeStatus;
   joinDate: string;
+  lastLoginAt?: string | Date | null;
+  updatedAt?: string | Date | null;
+  createdAt?: string | Date | null;
 }
 
 export interface AttendanceRecord {

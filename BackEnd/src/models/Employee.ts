@@ -20,6 +20,7 @@ interface EmployeeAttributes {
   status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   joinDate:     string;
   passwordHash: string | null;
+  lastLoginAt?: Date | null;
   createdAt?:   Date;
   updatedAt?:   Date;
 }
@@ -38,6 +39,7 @@ class Employee extends Model<EmployeeAttributes, EmployeeCreationAttributes>
   declare status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   declare joinDate:     string;
   declare passwordHash: string | null;
+  declare lastLoginAt:  Date | null;
   declare createdAt:    Date;
   declare updatedAt:    Date;
 }
@@ -60,10 +62,8 @@ Employee.init(
     email: {
       type:      DataTypes.STRING(255),
       allowNull: false,
-      unique:    true,   // no two employees can share an email
-      validate: {
-        isEmail: true,   // Sequelize validates email format automatically
-      },
+      unique:    true,
+      validate: { isEmail: true },
     },
     phone: {
       type:      DataTypes.STRING(30),
@@ -76,23 +76,23 @@ Employee.init(
     departmentId: {
       type:       DataTypes.UUID,
       allowNull:  true,
-      references: {
-        model: 'departments',  // foreign key → departments.id
-        key:   'id',
-      },
+      references: { model: 'departments', key: 'id' },
     },
     status: {
-      // ENUM means only these exact values are allowed in the database
       type:         DataTypes.ENUM('active', 'inactive', 'on_break', 'on_leave', 'absent'),
       defaultValue: 'active',
     },
     joinDate: {
-      type:      DataTypes.DATEONLY,  // stores only the date, no time (e.g. "2021-03-15")
+      type:      DataTypes.DATEONLY,
       allowNull: false,
     },
     passwordHash: {
       type:      DataTypes.STRING,
-      allowNull: true,   // null until super admin sets a password for the employee
+      allowNull: true,
+    },
+    lastLoginAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

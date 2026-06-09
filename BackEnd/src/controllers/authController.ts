@@ -70,6 +70,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Update last login timestamp
+    await employee.update({ lastLoginAt: new Date() });
+
     // Determine role — if the role field contains 'super_admin' treat as super_admin,
     // otherwise treat as employee
     const role = employee.role === 'super_admin' ? 'super_admin' : 'employee';

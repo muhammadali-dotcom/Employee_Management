@@ -10,6 +10,7 @@ import { getEmployees, getDepartments } from '@/lib/store';
 import { Employee, EmployeeStatus, Department } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
+import RecentActivity from '@/components/dashboard/Recentactivity';
 
 const IconUsers = () => (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -78,7 +79,7 @@ const STAT_CONFIG: {
 }[] = [
     {
       key: 'total',
-      label: 'Total Employees',
+      label: 'Present',
       icon: <IconUsers />,
       iconBg: 'transparent',
       iconColor: '#7c5cff',
@@ -247,35 +248,33 @@ const MonthlyAttendancePanel = ({
         {summary.map((item) => (
           <div
             key={item.label}
-            className="rounded-2xl border p-3"
+            className="rounded-2xl border px-2 py-3"
             style={{
               background: 'var(--bg-surface-soft)',
               borderColor: 'var(--border-soft)',
             }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-1 text-center">
               <span
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center"
+                className="flex h-7 w-7 items-center justify-center"
                 style={{ color: item.color }}
               >
                 {item.icon}
               </span>
 
-              <div className="min-w-0">
-                <p
-                  className="truncate text-[11px] font-medium"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  {item.label}
-                </p>
+              <p
+                className="text-[10px] font-bold leading-tight"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                {item.label}
+              </p>
 
-                <p
-                  className="text-sm font-black leading-tight"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  {item.value}
-                </p>
-              </div>
+              <p
+                className="text-sm font-black leading-tight"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {item.value}
+              </p>
             </div>
           </div>
         ))}
@@ -354,11 +353,42 @@ const DashboardPage = () => {
   const [activeFilter, setActiveFilter] = useState<EmployeeStatus | 'total' | null>(null);
 
   useEffect(() => {
+    if (!accessToken) {
+      console.log('No access token yet, skipping dashboard API call');
+      return;
+    }
+
     const loadData = async () => {
       const [empList, deptList] = await Promise.all([
         getEmployees(accessToken),
         getDepartments(accessToken),
       ]);
+
+      console.log(
+        'Employees from API:',
+        empList.map((e) => {
+          const employee = e as Employee & {
+            lastLoginAt?: string | Date | null;
+            updatedAt?: string | Date | null;
+            createdAt?: string | Date | null;
+            last_login_at?: string | Date | null;
+            updated_at?: string | Date | null;
+            created_at?: string | Date | null;
+          };
+
+          return {
+            id: employee.id,
+            name: `${employee.firstName} ${employee.lastName}`,
+            status: employee.status,
+            lastLoginAt: employee.lastLoginAt,
+            updatedAt: employee.updatedAt,
+            createdAt: employee.createdAt,
+            last_login_at: employee.last_login_at,
+            updated_at: employee.updated_at,
+            created_at: employee.created_at,
+          };
+        })
+      );
 
       setEmployees(empList);
       setDepartments(deptList);
@@ -429,8 +459,6 @@ const DashboardPage = () => {
     setActiveFilter((prev) => (prev === key ? null : key));
   };
 
-  const recentEmployees = employees.slice(0, 5);
-
   return (
     <AppShell>
       <div className="relative grid h-full min-h-0 grid-rows-[auto_1fr] gap-4 overflow-hidden">
@@ -440,6 +468,7 @@ const DashboardPage = () => {
               key={cfg.key}
               label={cfg.label}
               value={counts[cfg.key] ?? 0}
+              total={counts.total}
               icon={cfg.icon}
               iconBg={cfg.iconBg}
               iconColor={cfg.iconColor}
@@ -655,63 +684,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="dashboard-card col-span-3 h-full min-h-0 overflow-hidden p-4">
-            <div className="flex h-full min-h-0 flex-col">
-              <div className="mb-3 flex items-center justify-between">
-                <h2
-                  className="text-base font-bold"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  Recent Activity
-                </h2>
-              </div>
-
-              <div className="min-h-0 flex-1 space-y-2 overflow-hidden">
-                {recentEmployees.map((employee) => (
-                  <Link
-                    key={employee.id}
-                    href={`/employees/${employee.id}`}
-                    className="flex items-center justify-between gap-3 border-b pb-2 last:border-b-0"
-                    style={{ borderColor: 'var(--border-soft)' }}
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div
-                        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                        style={{
-                          background: 'var(--accent-soft)',
-                          color: 'var(--accent)',
-                        }}
-                      >
-                        {employee.firstName?.[0]}
-                        {employee.lastName?.[0]}
-                      </div>
-
-                      <div className="min-w-0">
-                        <p
-                          className="truncate text-xs font-bold"
-                          style={{ color: 'var(--text-primary)' }}
-                        >
-                          {employee.firstName} {employee.lastName}
-                        </p>
-
-                        <p
-                          className="truncate text-[11px]"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          Current status: {STATUS_LABELS[employee.status]}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span
-                      className="whitespace-nowrap text-[11px]"
-                      style={{ color: 'var(--text-muted)' }}
-                    >
-                      Live
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <RecentActivity employees={employees} />
           </div>
         </div>
       </div>

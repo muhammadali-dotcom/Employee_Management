@@ -6,6 +6,7 @@ interface StatsCardProps {
   icon: ReactNode;
   iconBg: string;
   iconColor: string;
+  total?: number;
   active?: boolean;
   onClick?: () => void;
 }
@@ -17,6 +18,7 @@ const StatsCard = ({
   iconBg,
   iconColor,
   active,
+  total,
   onClick,
 }: StatsCardProps) => {
   const numericValue = typeof value === 'number' ? value : Number(value) || 0;
@@ -25,12 +27,11 @@ const StatsCard = ({
 
   const getPercentText = () => {
     if (label === 'Total Employees') return '↑ 12 this month';
-    if (label === 'Active') return '77.4% of total';
-    if (label === 'On Break') return '4.8% of total';
-    if (label === 'On Leave') return '7.3% of total';
-    if (label === 'Absent') return '6.5% of total';
-    if (label === 'Inactive') return '4.0% of total';
-    return 'This month';
+    if (total && typeof value === 'number' && total > 0) {
+      const percent = Math.round((value / total) * 100);
+      return `${percent}% of total`;
+    }
+    return '';
   };
 
   const getLineColor = () => {

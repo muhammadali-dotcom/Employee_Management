@@ -44,4 +44,4 @@ const NewEmployeePage = () => {
   );
 };
 
-export default NewEmployeePage;
+export default NewEmployeePage; 
