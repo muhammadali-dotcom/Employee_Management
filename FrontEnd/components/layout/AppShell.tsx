@@ -1,18 +1,39 @@
-import Sidebar    from './Sidebar';
-import Header     from './Header';
+import Sidebar from './Sidebar';
+import Header from './Header';
 import RouteGuard from '@/components/auth/RouteGuard';
 
 const AppShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <RouteGuard>
       <div
-        className="flex min-h-screen"
-        style={{ backgroundColor: 'var(--bg-base)', transition: 'background-color 0.25s ease' }}
+        className="fixed inset-0 min-h-screen overflow-auto p-3 lg:p-4"
+        style={{
+          background: 'transparent',
+          color: 'var(--text-primary)',
+        }}
       >
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <Header />
-          <main className="flex-1 p-6 overflow-auto">{children}</main>
+        <div className="flex h-full min-h-0 gap-4 lg:gap-5">
+          <Sidebar />
+
+          <section
+            className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto rounded-[var(--radius-xl)] border"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--bg-surface), var(--bg-surface-soft))',
+              borderColor: 'var(--border)',
+              boxShadow: 'var(--card-shadow)',
+              backdropFilter: 'var(--blur)',
+              WebkitBackdropFilter: 'var(--blur)',
+            }}
+          >
+            <div className="flex-shrink-0">
+              <Header />
+            </div>
+
+            <main className="min-h-0 flex-1 overflow-auto p-3 lg:p-4">
+              {children}
+            </main>
+          </section>
         </div>
       </div>
     </RouteGuard>

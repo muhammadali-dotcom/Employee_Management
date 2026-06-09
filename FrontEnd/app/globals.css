@@ -1,41 +1,354 @@
 @import "tailwindcss";
 
-/* ── Light mode variables (default) ──────────────────────────────── */
+/* ─────────────────────────────────────────────
+   Global Theme Variables
+   Premium EMS Dashboard Theme
+   ───────────────────────────────────────────── */
+
+/* Light mode variables */
 :root {
-  --bg-base:        #f3f2ef;
-  --bg-surface:     #ffffff;
-  --bg-hover:       #eef3f8;
-  --border:         #e0dfdc;
-  --text-primary:   #000000;
-  --text-secondary: #666666;
-  --text-muted:     #999999;
-  --sidebar-bg:     #1b1f23;
-  --sidebar-text:   #ffffff;
-  --sidebar-muted:  #9ca3af;
+  /* Base colors */
+  --bg-base: #f8f4e8;
+  --bg-base-soft: #fffaf0;
+  --bg-surface: rgba(255, 255, 255, 0.78);
+  --bg-surface-solid: #ffffff;
+  --bg-surface-soft: rgba(255, 248, 232, 0.85);
+  --bg-hover: rgba(255, 193, 7, 0.10);
+
+  /* Accent */
+  --accent: #ffc107;
+  --accent-soft: rgba(255, 193, 7, 0.16);
+  --accent-medium: rgba(255, 193, 7, 0.35);
+  --accent-strong: #f5b800;
+
+  /* Border */
+  --border: rgba(20, 20, 20, 0.08);
+  --border-soft: rgba(20, 20, 20, 0.05);
+  --border-accent: rgba(255, 193, 7, 0.45);
+
+  /* Text */
+  --text-primary: #101114;
+  --text-secondary: #4d5562;
+  --text-muted: #8a919e;
+  --text-inverse: #ffffff;
+
+  /* Sidebar */
+  --sidebar-bg: rgba(255, 255, 255, 0.68);
+  --sidebar-text: #15171a;
+  --sidebar-muted: #7b8491;
+  --sidebar-active-bg: linear-gradient(135deg,
+      rgba(255, 193, 7, 0.24),
+      rgba(255, 255, 255, 0.76));
+
+  /* Cards */
+  --card-bg: rgba(255, 255, 255, 0.74);
+  --card-bg-soft: rgba(255, 250, 238, 0.82);
+  --card-shadow: 0 18px 45px rgba(112, 86, 26, 0.10);
+  --card-shadow-hover: 0 24px 65px rgba(112, 86, 26, 0.16);
+
+  /* Inputs */
+  --input-bg: rgba(255, 255, 255, 0.82);
+  --input-border: rgba(20, 20, 20, 0.08);
+
+  /* Status colors */
+  --success: #33c75a;
+  --success-soft: rgba(51, 199, 90, 0.14);
+
+  --danger: #ff4d4f;
+  --danger-soft: rgba(255, 77, 79, 0.13);
+
+  --info: #3da2ff;
+  --info-soft: rgba(61, 162, 255, 0.13);
+
+  --purple: #7c5cff;
+  --purple-soft: rgba(124, 92, 255, 0.13);
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Effects */
+  --blur: blur(18px);
 }
 
-/* ── Dark mode variables — LinkedIn dark palette ─────────────────── */
+/* Dark mode variables */
 html.dark {
-  --bg-base:        #1d2226;
-  --bg-surface:     #283339;
-  --bg-hover:       #32444e;
-  --border:         #38434f;
-  --text-primary:   #e7e9ea;
-  --text-secondary: #b0b8bf;
-  --text-muted:     #8899a6;
-  --sidebar-bg:     #1d2226;
-  --sidebar-text:   #e7e9ea;
-  --sidebar-muted:  #8899a6;
+  /* Base colors */
+  --bg-base: #070a0d;
+  --bg-base-soft: #10151a;
+  --bg-surface: rgba(18, 23, 28, 0.72);
+  --bg-surface-solid: #12171c;
+  --bg-surface-soft: rgba(21, 27, 33, 0.78);
+  --bg-hover: rgba(255, 193, 7, 0.12);
+
+  /* Accent - same yellow as light mode */
+  --accent: #ffc107;
+  --accent-soft: rgba(255, 193, 7, 0.16);
+  --accent-medium: rgba(255, 193, 7, 0.35);
+  --accent-strong: #f5b800;
+
+  /* Border */
+  --border: rgba(255, 255, 255, 0.10);
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(255, 193, 7, 0.50);
+
+  /* Text */
+  --text-primary: #f4f6f8;
+  --text-secondary: #b9c0c9;
+  --text-muted: #7f8a96;
+  --text-inverse: #05070a;
+
+  /* Sidebar */
+  --sidebar-bg: rgba(12, 17, 22, 0.72);
+  --sidebar-text: #f4f6f8;
+  --sidebar-muted: #89939f;
+  --sidebar-active-bg: linear-gradient(135deg,
+      rgba(255, 193, 7, 0.24),
+      rgba(255, 193, 7, 0.06));
+
+  /* Cards */
+  --card-bg: rgba(18, 23, 28, 0.72);
+  --card-bg-soft: rgba(20, 27, 34, 0.78);
+  --card-shadow: 0 22px 65px rgba(0, 0, 0, 0.42);
+  --card-shadow-hover: 0 28px 80px rgba(0, 0, 0, 0.55);
+
+  /* Inputs */
+  --input-bg: rgba(15, 20, 26, 0.82);
+  --input-border: rgba(255, 255, 255, 0.10);
+
+  /* Status colors */
+  --success: #33c75a;
+  --success-soft: rgba(51, 199, 90, 0.15);
+
+  --danger: #ff4d4f;
+  --danger-soft: rgba(255, 77, 79, 0.15);
+
+  --info: #3da2ff;
+  --info-soft: rgba(61, 162, 255, 0.15);
+
+  --purple: #7c5cff;
+  --purple-soft: rgba(124, 92, 255, 0.15);
 }
 
-*, *::before, *::after {
+/* ─────────────────────────────────────────────
+   Reset
+   ───────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
+  min-height: 100vh;
   margin: 0;
-  font-family: var(--font-geist, system-ui, sans-serif);
-  background-color: var(--bg-base);
+  font-family: var(--font-geist, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   color: var(--text-primary);
-  transition: background-color 0.25s ease, color 0.25s ease;
+  background:
+    radial-gradient(circle at 76% 2%, rgba(255, 193, 7, 0.24), transparent 28%),
+    radial-gradient(circle at 15% 88%, rgba(255, 193, 7, 0.14), transparent 24%),
+    linear-gradient(135deg, var(--bg-base), var(--bg-base-soft));
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+  overflow-x: hidden;
+}
+
+html.dark body {
+  background:
+    radial-gradient(circle at 73% 0%, rgba(255, 193, 7, 0.24), transparent 28%),
+    radial-gradient(circle at 15% 90%, rgba(255, 193, 7, 0.11), transparent 25%),
+    radial-gradient(circle at 88% 76%, rgba(28, 107, 255, 0.08), transparent 26%),
+    linear-gradient(135deg, #05070a 0%, #0a1015 48%, #070a0d 100%);
+}
+
+/* Premium background noise / glow layer */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(115deg,
+      transparent 0%,
+      rgba(255, 193, 7, 0.08) 42%,
+      transparent 58%);
+  opacity: 0.8;
+}
+
+html.dark body::before {
+  background:
+    linear-gradient(115deg,
+      transparent 0%,
+      rgba(255, 193, 7, 0.10) 42%,
+      transparent 58%);
+  opacity: 0.9;
+}
+
+/* ─────────────────────────────────────────────
+   Useful Global Classes
+   Use these in your components later
+   ───────────────────────────────────────────── */
+
+.app-shell {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.sidebar {
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border: 1px solid var(--border);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  box-shadow: var(--card-shadow);
+}
+
+.card,
+.dashboard-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.card:hover,
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-accent);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.glass-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  box-shadow: var(--card-shadow);
+}
+
+.active-nav,
+.nav-active {
+  color: var(--accent);
+  background: var(--sidebar-active-bg);
+  border: 1px solid var(--border-accent);
+  box-shadow:
+    0 0 0 1px rgba(255, 193, 7, 0.08),
+    0 12px 30px rgba(255, 193, 7, 0.16);
+}
+
+.btn-primary,
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #111111;
+  border: 1px solid var(--border-accent);
+  box-shadow: 0 12px 28px rgba(255, 193, 7, 0.22);
+}
+
+.btn-primary:hover,
+.btn-accent:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 16px 36px rgba(255, 193, 7, 0.28);
+}
+
+.input,
+.search-input,
+input,
+select,
+textarea {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input:focus,
+.search-input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.bg-accent-soft {
+  background: var(--accent-soft);
+}
+
+.border-default {
+  border-color: var(--border);
+}
+
+.border-accent {
+  border-color: var(--border-accent);
+}
+
+/* ─────────────────────────────────────────────
+   Scrollbar
+   ───────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 193, 7, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 193, 7, 0.55);
+  background-clip: content-box;
+}
+
+/* ─────────────────────────────────────────────
+   Selection
+   ───────────────────────────────────────────── */
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
 }

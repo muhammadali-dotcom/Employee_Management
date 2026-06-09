@@ -5,22 +5,56 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-const Input = ({ label, error, className = '', id, ...props }: InputProps) => {
+const Input = ({
+  label,
+  error,
+  className = '',
+  id,
+  style,
+  ...props
+}: InputProps) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-gray-700">
+        <label
+          htmlFor={id}
+          className="text-sm font-bold"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {label}
         </label>
       )}
+
       <input
         id={id}
         {...props}
-        className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-          error ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'
-        } ${className}`}
+        className={`
+          w-full rounded-2xl border px-4 py-3 text-sm font-medium
+          outline-none transition-all duration-200
+          placeholder:text-[var(--text-muted)]
+          focus:border-[var(--border-accent)]
+          focus:ring-4 focus:ring-[var(--accent-soft)]
+          disabled:cursor-not-allowed disabled:opacity-60
+          ${className}
+        `}
+        style={{
+          background: error ? 'var(--danger-soft)' : 'var(--input-bg)',
+          borderColor: error ? 'rgba(255, 77, 79, 0.45)' : 'var(--input-border)',
+          color: 'var(--text-primary)',
+          boxShadow: error ? '0 0 0 4px var(--danger-soft)' : 'none',
+          ...style,
+        }}
       />
-      {error && <p className="text-xs text-red-600">{error}</p>}
+
+      {error && (
+        <p
+          className="text-xs font-semibold"
+          style={{ color: 'var(--danger)' }}
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 };

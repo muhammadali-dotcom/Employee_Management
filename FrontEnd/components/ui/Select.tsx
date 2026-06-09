@@ -7,29 +7,83 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
 }
 
-const Select = ({ label, error, options, placeholder, className = '', id, ...props }: SelectProps) => {
+const Select = ({
+  label,
+  error,
+  options,
+  placeholder,
+  className = '',
+  id,
+  style,
+  ...props
+}: SelectProps) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-gray-700">
+        <label
+          htmlFor={id}
+          className="text-sm font-bold"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {label}
         </label>
       )}
-      <select
-        id={id}
-        {...props}
-        className={`w-full rounded-lg border px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-          error ? 'border-red-400 bg-red-50' : 'border-gray-300'
-        } ${className}`}
-      >
-        {placeholder && <option value="">{placeholder}</option>}
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+
+      <div className="relative">
+        <select
+          id={id}
+          {...props}
+          className={`
+            w-full appearance-none rounded-2xl border px-4 py-3 pr-10 text-sm font-medium
+            outline-none transition-all duration-200
+            focus:border-[var(--border-accent)]
+            focus:ring-4 focus:ring-[var(--accent-soft)]
+            disabled:cursor-not-allowed disabled:opacity-60
+            ${className}
+          `}
+          style={{
+            background: error ? 'var(--danger-soft)' : 'var(--input-bg)',
+            borderColor: error
+              ? 'rgba(255, 77, 79, 0.45)'
+              : 'var(--input-border)',
+            color: 'var(--text-primary)',
+            boxShadow: error ? '0 0 0 4px var(--danger-soft)' : 'none',
+            ...style,
+          }}
+        >
+          {placeholder && <option value="">{placeholder}</option>}
+
+          {options.map((option) => (
+            <option
+              key={option.value}
+              value={option.value}
+              style={{
+                background: 'var(--bg-surface-solid)',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {option.label}
+            </option>
+          ))}
+        </select>
+
+        <span
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          ▼
+        </span>
+      </div>
+
+      {error && (
+        <p
+          className="text-xs font-semibold"
+          style={{ color: 'var(--danger)' }}
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 };

@@ -15,18 +15,33 @@ const NewEmployeePage = () => {
     const loadDepts = async () => {
       const deptList = await getDepartments(accessToken);
       setDepartments(deptList);
-    }
+    };
+
     loadDepts();
   }, [accessToken]);
 
   return (
     <AppShell>
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">Add New Employee</h2>
+      <div
+        className="rounded-[var(--radius-xl)] border p-4 sm:p-6"
+        style={{
+          background: 'var(--bg-surface, #10151c)',
+          borderColor: 'var(--border)',
+          color: 'var(--text-primary)',
+          boxShadow: 'var(--card-shadow)',
+        }}
+      >
+        <h2
+          className="mb-6 text-lg font-black"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          Add New Employee
+        </h2>
+
         <EmployeeForm departments={departments} />
       </div>
     </AppShell>
   );
-}
+};
 
 export default NewEmployeePage;
