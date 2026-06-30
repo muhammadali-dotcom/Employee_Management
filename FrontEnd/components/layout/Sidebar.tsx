@@ -300,11 +300,11 @@ const Sidebar = () => {
         </button>
 
         <p className="px-3 text-center text-xs" style={{ color: 'var(--sidebar-muted)' }}>
-          v1.0.0
+          v1.0.1
         </p>
       </div>
     </aside>
   );
 };
 
-export default Sidebar;
+export default Sidebar; 
