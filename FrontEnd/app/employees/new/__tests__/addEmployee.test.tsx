@@ -333,28 +333,17 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
   });
 
   // TC-AE-064 — KNOWN GAP: symbols currently accepted (no regex at all).
-  // test('first name with symbols is rejected', async () => {
-  //   const user = userEvent.setup();
-  //   renderNewEmployeePage();
-
-  //   await fillForm(user, { firstName: 'Ali@#' });
-  //   await submit(user);
-
-  //   expect(await screen.findByText(/firstname must contain only letters/i)).toBeInTheDocument();
-  //   expect(postCalls).toHaveLength(0);
-  // });
-
     test('first name with symbols is rejected', async () => {
-    const user = userEvent.setup();
-    renderNewEmployeePage();
+      const user = userEvent.setup();
+      renderNewEmployeePage();
 
-    await fillForm(user, { firstName: 'Ali@#' });
-    await submit(user);
+      await fillForm(user, { firstName: 'Ali@#' });
+      await submit(user);
 
-    expect(await screen.findByText(/firstname must contain only numbers/i)).toBeInTheDocument();
-    expect(postCalls).toHaveLength(0);
-  });
-  
+      expect(await screen.findByText(/firstname must contain only letters/i)).toBeInTheDocument();
+      expect(postCalls).toHaveLength(0);
+    });
+
 
   // TC-AE-065
   test('whitespace-only first name is rejected as required', async () => {
