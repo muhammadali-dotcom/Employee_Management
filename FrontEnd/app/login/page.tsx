@@ -174,7 +174,7 @@ const LoginPage = () => {
               className="max-w-md text-4xl font-black leading-tight tracking-tight"
               style={{ color: 'var(--text-primary)' }}
             >
-              Manage your team with clarity and control.
+              My name is ALI, and I am here to help you manage your employees efficiently.
             </h2>
 
             <p
