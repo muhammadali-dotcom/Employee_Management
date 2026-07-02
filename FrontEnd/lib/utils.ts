@@ -6,6 +6,17 @@ export const formatDate = (dateStr: string): string => {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+/** Formats an ISO (YYYY-MM-DD) date for display, e.g. "01 Jul 2026". The
+ * stored/submitted value must stay ISO \u2014 this is a display-only formatter. */
+export const formatJoinDate = (dateStr: string): string => {
+  if (!dateStr) return '\u2014';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+/** Today's date as an ISO (YYYY-MM-DD) string, in the local timezone. */
+export const todayIso = (): string => new Date().toISOString().split('T')[0];
+
 export const generateId = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;

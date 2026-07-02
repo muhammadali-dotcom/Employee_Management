@@ -58,28 +58,28 @@ export const getEmployee = async (id: string, token?: string | null): Promise<Em
 }
 
 export const saveEmployee = async (employee: Employee, token?: string | null): Promise<void> => {
-  try {
-    const checkRes = await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
-      headers: authHeaders(token),
-      credentials: 'include',
-    });
-    if (checkRes.ok) {
-      await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
+  const checkRes = await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
+    headers: authHeaders(token),
+    credentials: 'include',
+  });
+
+  const res = checkRes.ok
+    ? await fetch(`${API_BASE_URL}/employees/${employee.id}`, {
         method: 'PUT',
         headers: authHeaders(token),
         credentials: 'include',
         body: JSON.stringify(employee),
-      });
-    } else {
-      await fetch(`${API_BASE_URL}/employees`, {
+      })
+    : await fetch(`${API_BASE_URL}/employees`, {
         method: 'POST',
         headers: authHeaders(token),
         credentials: 'include',
         body: JSON.stringify(employee),
       });
-    }
-  } catch (error) {
-    console.error('Error saving employee:', error);
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Failed to save employee (${res.status})`);
   }
 }
 
@@ -98,16 +98,15 @@ export const deleteEmployee = async (id: string, token?: string | null): Promise
 // ── Departments ────────────────────────────────────────────────────────────
 
 export const getDepartments = async (token?: string | null): Promise<Department[]> => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/departments`, {
-      headers: authHeaders(token),
-      credentials: 'include',
-    });
-    return await handleResponse<Department[]>(res, []);
-  } catch (error) {
-    console.error('Error fetching departments:', error);
-    return [];
+  const res = await fetch(`${API_BASE_URL}/departments`, {
+    headers: authHeaders(token),
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Failed to fetch departments (${res.status})`);
   }
+  return res.json() as Promise<Department[]>;
 }
 
 export const saveDepartment = async (dept: Department, token?: string | null): Promise<void> => {

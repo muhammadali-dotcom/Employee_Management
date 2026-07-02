@@ -166,14 +166,19 @@ const EditEmployeePage = () => {
     const loadData = async () => {
       setLoading(true);
 
-      const [emp, deptList] = await Promise.all([
-        getEmployee(id, accessToken),
-        getDepartments(accessToken),
-      ]);
+      try {
+        const [emp, deptList] = await Promise.all([
+          getEmployee(id, accessToken),
+          getDepartments(accessToken),
+        ]);
 
-      setEmployee(emp ?? null);
-      setDepartments(deptList);
-      setLoading(false);
+        setEmployee(emp ?? null);
+        setDepartments(deptList);
+      } catch {
+        setDepartments([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadData();

@@ -359,10 +359,19 @@ const DashboardPage = () => {
     }
 
     const loadData = async () => {
-      const [empList, deptList] = await Promise.all([
-        getEmployees(accessToken),
-        getDepartments(accessToken),
-      ]);
+      let empList: Employee[];
+      let deptList: Department[];
+
+      try {
+        [empList, deptList] = await Promise.all([
+          getEmployees(accessToken),
+          getDepartments(accessToken),
+        ]);
+      } catch {
+        setEmployees([]);
+        setDepartments([]);
+        return;
+      }
 
       console.log(
         'Employees from API:',

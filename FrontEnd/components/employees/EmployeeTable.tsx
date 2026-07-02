@@ -61,6 +61,9 @@ const EmployeeTable = () => {
 
       setEmployees(empList);
       setDepartments(deptList);
+    } catch {
+      setEmployees([]);
+      setDepartments([]);
     } finally {
       setLoading(false);
     }

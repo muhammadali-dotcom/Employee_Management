@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import { getEmployee, getDepartments, deleteEmployee } from '@/lib/store';
 import { Employee, Department } from '@/lib/types';
-import { formatDate } from '@/lib/utils';
+import { formatJoinDate } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 
 const EmployeeDetailPage = () => {
@@ -25,14 +25,19 @@ const EmployeeDetailPage = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
 
-    const [emp, deptList] = await Promise.all([
-      getEmployee(id, accessToken),
-      getDepartments(accessToken),
-    ]);
+    try {
+      const [emp, deptList] = await Promise.all([
+        getEmployee(id, accessToken),
+        getDepartments(accessToken),
+      ]);
 
-    setEmployee(emp ?? null);
-    setDepartments(deptList);
-    setLoading(false);
+      setEmployee(emp ?? null);
+      setDepartments(deptList);
+    } catch {
+      setDepartments([]);
+    } finally {
+      setLoading(false);
+    }
   }, [id, accessToken]);
 
   useEffect(() => {
@@ -163,7 +168,7 @@ const EmployeeDetailPage = () => {
     },
     {
       label: 'Join Date',
-      value: formatDate(employee.joinDate),
+      value: formatJoinDate(employee.joinDate),
       icon: '↳',
       color: 'var(--info)',
       bg: 'var(--info-soft)',
@@ -227,7 +232,7 @@ const EmployeeDetailPage = () => {
                   className="mt-1 text-sm"
                   style={{ color: 'var(--text-muted)' }}
                 >
-                  {deptName} Department · Joined {formatDate(employee.joinDate)}
+                  {deptName} Department · Joined {formatJoinDate(employee.joinDate)}
                 </p>
               </div>
             </div>

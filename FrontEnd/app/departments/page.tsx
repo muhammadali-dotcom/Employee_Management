@@ -119,13 +119,18 @@ const DepartmentsPage = () => {
   const [deleteTarget, setDeleteTarget] = useState<Department | null>(null);
 
   const load = useCallback(async () => {
-    const [deptList, empList] = await Promise.all([
-      getDepartments(accessToken),
-      getEmployees(accessToken),
-    ]);
+    try {
+      const [deptList, empList] = await Promise.all([
+        getDepartments(accessToken),
+        getEmployees(accessToken),
+      ]);
 
-    setDepartments(deptList);
-    setEmployees(empList);
+      setDepartments(deptList);
+      setEmployees(empList);
+    } catch {
+      setDepartments([]);
+      setEmployees([]);
+    }
   }, [accessToken]);
 
   useEffect(() => {

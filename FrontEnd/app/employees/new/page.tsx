@@ -10,11 +10,17 @@ import { useAuth } from '@/context/AuthContext';
 const NewEmployeePage = () => {
   const { accessToken } = useAuth();
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [deptError, setDeptError] = useState('');
 
   useEffect(() => {
     const loadDepts = async () => {
-      const deptList = await getDepartments(accessToken);
-      setDepartments(deptList);
+      try {
+        const deptList = await getDepartments(accessToken);
+        setDepartments(deptList);
+        setDeptError('');
+      } catch {
+        setDeptError('Failed to load departments. Please try again.');
+      }
     };
 
     loadDepts();
@@ -37,6 +43,20 @@ const NewEmployeePage = () => {
         >
           Add New Employee
         </h2>
+
+        {deptError && (
+          <div
+            className="mb-6 rounded-2xl border px-4 py-3 text-sm font-semibold"
+            role="alert"
+            style={{
+              background: 'var(--danger-soft)',
+              borderColor: 'rgba(255, 77, 79, 0.28)',
+              color: 'var(--danger)',
+            }}
+          >
+            {deptError}
+          </div>
+        )}
 
         <EmployeeForm departments={departments} />
       </div>

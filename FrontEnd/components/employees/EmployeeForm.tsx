@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Employee, EmployeeStatus } from '@/lib/types';
 import { Department } from '@/lib/types';
 import { saveEmployee } from '@/lib/store';
-import { generateId } from '@/lib/utils';
+import { generateId, todayIso } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
@@ -28,10 +28,34 @@ interface FormErrors {
   firstName?: string;
   lastName?: string;
   email?: string;
+  phone?: string;
   role?: string;
   departmentId?: string;
   status?: string;
+  joinDate?: string;
 }
+
+const NAME_PATTERN = /^[A-Za-z\s'-]+$/;
+const JOIN_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+const IconCalendar = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4" />
+    <path d="M8 2v4" />
+    <path d="M3 10h18" />
+  </svg>
+);
 
 const EmployeeForm = ({ employee, departments }: Props) => {
   const router = useRouter();
@@ -73,10 +97,14 @@ const EmployeeForm = ({ employee, departments }: Props) => {
 
     if (!form.firstName.trim()) {
       nextErrors.firstName = 'First name is required';
+    } else if (!NAME_PATTERN.test(form.firstName.trim())) {
+      nextErrors.firstName = 'firstName must contain only letters';
     }
 
     if (!form.lastName.trim()) {
       nextErrors.lastName = 'Last name is required';
+    } else if (!NAME_PATTERN.test(form.lastName.trim())) {
+      nextErrors.lastName = 'lastName must contain only letters';
     }
 
     if (!form.email.trim()) {
@@ -85,12 +113,32 @@ const EmployeeForm = ({ employee, departments }: Props) => {
       nextErrors.email = 'Enter a valid email address';
     }
 
+    if (form.phone.trim()) {
+      const digitsOnly = form.phone.replace(/\D/g, '');
+
+      if (!/^[0-9+\-\s()]+$/.test(form.phone)) {
+        nextErrors.phone = 'Phone number must contain only digits';
+      } else if (digitsOnly.length < 7) {
+        nextErrors.phone = 'Phone number is too short';
+      } else if (digitsOnly.length > 15) {
+        nextErrors.phone = 'Phone number is too long';
+      }
+    }
+
     if (!form.role.trim()) {
       nextErrors.role = 'Role is required';
     }
 
     if (!form.departmentId) {
       nextErrors.departmentId = 'Department is required';
+    }
+
+    if (!form.joinDate.trim()) {
+      nextErrors.joinDate = 'Join date is required';
+    } else if (!JOIN_DATE_PATTERN.test(form.joinDate.trim())) {
+      nextErrors.joinDate = 'joinDate must be in YYYY-MM-DD format';
+    } else if (form.joinDate.trim() > todayIso()) {
+      nextErrors.joinDate = 'Join date cannot be a future date';
     }
 
     setErrors(nextErrors);
@@ -144,6 +192,7 @@ const EmployeeForm = ({ employee, departments }: Props) => {
   return (
     <form
       onSubmit={handleSubmit}
+      noValidate
       className="w-full space-y-5 rounded-[var(--radius-xl)] border p-4 sm:p-5"
       style={{
         background: formBg,
@@ -261,6 +310,7 @@ const EmployeeForm = ({ employee, departments }: Props) => {
             label="Phone Number"
             value={form.phone}
             onChange={(event) => updateForm('phone', event.target.value)}
+            error={errors.phone}
             placeholder="555-0101"
           />
         </div>
@@ -318,6 +368,10 @@ const EmployeeForm = ({ employee, departments }: Props) => {
             type="date"
             value={form.joinDate}
             onChange={(event) => updateForm('joinDate', event.target.value)}
+            error={errors.joinDate}
+            placeholder="Select join date"
+            max={todayIso()}
+            icon={<IconCalendar />}
           />
 
           <Select
