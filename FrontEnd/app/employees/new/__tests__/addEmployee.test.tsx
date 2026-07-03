@@ -228,9 +228,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-056 — KNOWN GAP: saveEmployee() (lib/store.ts) never checks response.ok,
-  // so a 400 "duplicate email" response from the API is silently swallowed and the
-  // form still navigates away as if it succeeded.
+  // TC-AE-056
   test('duplicate email is rejected with an error and no navigation', async () => {
     const user = userEvent.setup();
     createEmployeeResponse = () =>
@@ -259,7 +257,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls[0]).toMatchObject({ email: 'ALI@COMPANY.COM' });
   });
 
-  // TC-AE-058 — KNOWN GAP: no phone validation exists (validate() never checks `phone`).
+  // TC-AE-058
   test('phone field with alphabetic characters is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -271,7 +269,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-059 — KNOWN GAP: no minimum length check on phone.
+  // TC-AE-059
   test('phone field that is too short is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -283,7 +281,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-060 — KNOWN GAP: no maximum length check on phone.
+  // TC-AE-060
   test('phone field that is too long is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -295,8 +293,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-061 — KNOWN GAP: validate() only checks that firstName is non-empty, no
-  // letters-only regex, so "2223" currently passes and the employee gets created.
+  // TC-AE-061
   test('first name with numbers only is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -308,7 +305,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-062 — KNOWN GAP: same as TC-AE-061 for lastName.
+  // TC-AE-062
   test('last name with numbers only is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -320,7 +317,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-063 — KNOWN GAP: mixed letters/numbers currently accepted.
+  // TC-AE-063
   test('first name with mixed letters and numbers is rejected', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -332,7 +329,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-064 — KNOWN GAP: symbols currently accepted (no regex at all).
+  // TC-AE-064
     test('first name with symbols is rejected', async () => {
       const user = userEvent.setup();
       renderNewEmployeePage();
@@ -382,8 +379,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(postCalls).toHaveLength(0);
   });
 
-  // TC-AE-068 — KNOWN GAP: validate() never checks joinDate at all, so clearing it
-  // does not block submission.
+  // TC-AE-068
   test('missing join date shows a validation error and blocks submit', async () => {
     const user = userEvent.setup();
     renderNewEmployeePage();
@@ -468,8 +464,7 @@ describe('Add Employee form (TC-AE-049 .. TC-AE-080)', () => {
     expect(select).toBeInTheDocument();
   });
 
-  // TC-AE-074 — KNOWN GAP: getDepartments() swallows API failures and resolves to
-  // [], so the page never surfaces a visible error message.
+  // TC-AE-074
   test('department API failure shows a friendly error', async () => {
     departmentsResponse = () => jsonResponse({ error: 'Internal error' }, false, 500);
     renderNewEmployeePage();

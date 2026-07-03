@@ -66,24 +66,24 @@
 
 ---
 
-## 5. Known Bugs Documented in Test Cases
+## 5. Known Bugs Documented in Test Cases (RESOLVED)
 
-These are bugs found during code inspection. Test cases are marked with BUG in Remarks.
+These bugs were found during code inspection and confirmed by automated tests. All have been fixed in `BackEnd/src/middleware/validate.ts`.
 
-| TC ID | Bug Description | Severity |
-|---|---|---|
-| TC-AE-061 | First name accepts numbers only (e.g. "2223") — backend only checks empty, not format | High |
-| TC-AE-062 | Last name accepts numbers only — same root cause as above | High |
-| TC-AE-063 | First name accepts mixed letters+numbers (e.g. "Ali123") | High |
-| TC-AE-069 | Join date accepts wrong format (e.g. "15-01-2024") — no YYYY-MM-DD validation | High |
-| TC-AE-070 | Join date accepts any string — "January 15" passes backend validation | High |
-| TC-AE-058 | Phone accepts alphabetic characters — no phone validation at all | Medium |
-| TC-AE-059 | Phone accepts any length — no minimum length check | Medium |
-| TC-AE-060 | Phone accepts any length — no maximum length check | Medium |
-| TC-DEPT-013 | Deleting a department silently unassigns all its employees — no blocking or strong warning | Medium |
+| TC ID | Bug Description | Severity | Status |
+|---|---|---|---|
+| TC-AE-061 | First name accepts numbers only (e.g. "2223") — backend only checks empty, not format | High | Fixed |
+| TC-AE-062 | Last name accepts numbers only — same root cause as above | High | Fixed |
+| TC-AE-063 | First name accepts mixed letters+numbers (e.g. "Ali123") | High | Fixed |
+| TC-AE-069 | Join date accepts wrong format (e.g. "15-01-2024") — no YYYY-MM-DD validation | High | Fixed |
+| TC-AE-070 | Join date accepts any string — "January 15" passes backend validation | High | Fixed |
+| TC-AE-058 | Phone accepts alphabetic characters — no phone validation at all | Medium | Fixed |
+| TC-AE-059 | Phone accepts any length — no minimum length check | Medium | Fixed |
+| TC-AE-060 | Phone accepts any length — no maximum length check | Medium | Fixed |
+| TC-DEPT-013 | Deleting a department silently unassigns all its employees — no blocking or strong warning | Medium | Verified — frontend already shows a confirmation modal with affected employee count |
 
-**Root cause of name/date bugs:** `validate.ts` only calls `.trim()` to check if empty. It does not apply regex for format or content.  
-**Fix:** Add `/^[a-zA-Z]+$/` for names and `/^\d{4}-\d{2}-\d{2}$/` for joinDate. See prior plan file for exact code.
+**Root cause of name/date bugs:** `validate.ts` only called `.trim()` to check if empty. It applied no regex for format or content.
+**Fix applied:** Added `NAME_PATTERN = /^[A-Za-z\s'-]+$/` for `firstName`/`lastName`, `JOIN_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/` for `joinDate`, and a new `phone` check (`/^[0-9+\-\s()]+$/` plus a 7–15 digit length range), mirroring the validation already present client-side in `FrontEnd/components/employees/EmployeeForm.tsx`. Covered by `BackEnd/src/__tests__/validate.test.ts` (57/57 backend tests passing).
 
 ---
 
