@@ -174,7 +174,7 @@ const LoginPage = () => {
               className="max-w-md text-4xl font-black leading-tight tracking-tight"
               style={{ color: 'var(--text-primary)' }}
             >
-              Manage your team with clarity and control.
+              ALI RAFAY ANAS ASIM 
             </h2>
 
             <p
