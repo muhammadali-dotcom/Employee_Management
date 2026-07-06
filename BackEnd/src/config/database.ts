@@ -8,6 +8,12 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
+// Sequelize requires the 'pg' driver dynamically at runtime (by a string it
+// builds itself), so bundlers that trace static imports — like Vercel's
+// serverless function bundler — don't detect it and leave it out of the
+// deployed function. This explicit import forces it to be bundled.
+import 'pg';
+
 dotenv.config();
 
 const baseOptions = {
