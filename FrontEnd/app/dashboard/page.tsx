@@ -244,7 +244,7 @@ const MonthlyAttendancePanel = ({
         </button>
       </div>
 
-      <div className="mb-3 grid grid-cols-5 gap-2">
+      <div className="mb-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
         {summary.map((item) => (
           <div
             key={item.label}
@@ -470,8 +470,8 @@ const DashboardPage = () => {
 
   return (
     <AppShell>
-      <div className="relative grid h-full min-h-0 grid-rows-[auto_1fr] gap-4 overflow-hidden">
-        <div className="grid grid-cols-6 gap-3">
+      <div className="relative grid h-full min-h-0 grid-rows-[auto_auto] gap-4 overflow-visible lg:grid-rows-[auto_1fr] lg:overflow-hidden">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-6">
           {STAT_CONFIG.map((cfg) => (
             <StatsCard
               key={cfg.key}
@@ -489,7 +489,7 @@ const DashboardPage = () => {
 
         {activeFilter !== null && (
           <div
-            className="absolute left-0 right-0 top-[150px] z-30 mx-auto max-h-[430px] w-[92%] overflow-hidden rounded-[var(--radius-lg)] border"
+            className="static z-30 mx-auto max-h-[430px] w-full overflow-hidden rounded-[var(--radius-lg)] border lg:absolute lg:left-0 lg:right-0 lg:top-[150px] lg:w-[92%]"
             style={{
               background: 'var(--card-bg)',
               borderColor: 'var(--border-accent)',
@@ -595,12 +595,12 @@ const DashboardPage = () => {
           </div>
         )}
 
-        <div className="grid min-h-0 grid-cols-12 gap-4 overflow-hidden">
-          <div className="dashboard-card col-span-6 h-full min-h-0 overflow-hidden p-4">
+        <div className="grid min-h-0 grid-cols-1 gap-4 overflow-visible lg:grid-cols-12 lg:overflow-hidden">
+          <div className="dashboard-card min-h-[360px] overflow-visible p-4 lg:col-span-6 lg:h-full lg:min-h-0 lg:overflow-hidden">
             <MonthlyAttendancePanel counts={counts} monthLabel={currentMonthLabel} />
           </div>
 
-          <div className="dashboard-card col-span-3 h-full min-h-0 overflow-hidden p-4">
+          <div className="dashboard-card min-h-[340px] overflow-visible p-4 lg:col-span-3 lg:h-full lg:min-h-0 lg:overflow-hidden">
             <div className="flex h-full min-h-0 flex-col">
               <h2
                 className="mb-3 text-base font-bold"
@@ -692,7 +692,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="dashboard-card col-span-3 h-full min-h-0 overflow-hidden p-4">
+          <div className="dashboard-card min-h-[320px] overflow-visible p-4 lg:col-span-3 lg:h-full lg:min-h-0 lg:overflow-hidden">
             <RecentActivity employees={employees} />
           </div>
         </div>

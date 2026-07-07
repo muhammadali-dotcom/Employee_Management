@@ -487,12 +487,18 @@ const EmployeeForm = ({ employee, departments }: Props) => {
             : 'Create a new employee profile in your organization.'}
         </p>
 
-        <div className="flex gap-3">
-          <Button type="button" variant="secondary" onClick={() => router.back()} disabled={saving}>
+        <div className="flex w-full flex-col-reverse gap-3 sm:w-auto sm:flex-row">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => router.back()}
+            disabled={saving}
+            className="w-full sm:w-auto"
+          >
             Cancel
           </Button>
 
-          <Button type="submit" disabled={saving}>
+          <Button type="submit" disabled={saving} className="w-full sm:w-auto">
             {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Employee'}
           </Button>
         </div>

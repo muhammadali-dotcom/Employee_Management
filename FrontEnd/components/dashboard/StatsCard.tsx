@@ -116,7 +116,7 @@ const StatsCard = ({
             </p>
 
             <p
-              className="mt-1 text-2xl font-black leading-none tracking-tight"
+              className="mt-1 text-xl font-black leading-none tracking-tight sm:text-2xl"
               style={{ color: 'var(--text-primary)' }}
             >
               {numericValue.toLocaleString()}

@@ -260,10 +260,10 @@ const EmployeeTable = () => {
         }}
       >
         <div className="flex h-full min-h-0 flex-col overflow-hidden">
-          {/* Header row */}
+          {/* Header row (desktop only) */}
           <div
             className="
-              grid grid-cols-[2.2fr_1.2fr_1.1fr_1.6fr_0.9fr_1.1fr]
+              hidden lg:grid grid-cols-[2.2fr_1.2fr_1.1fr_1.6fr_0.9fr_1.1fr]
               items-center gap-4 border-b px-5 py-3 text-xs font-black uppercase tracking-wider
             "
             style={{
@@ -295,10 +295,11 @@ const EmployeeTable = () => {
                   index % 2 === 0 ? 'var(--bg-surface)' : 'var(--bg-surface-soft)';
 
                 return (
+                  <div key={employee.id}>
+                  {/* Desktop row */}
                   <div
-                    key={employee.id}
                     className="
-                      grid grid-cols-[2.2fr_1.2fr_1.1fr_1.6fr_0.9fr_1.1fr]
+                      hidden lg:grid grid-cols-[2.2fr_1.2fr_1.1fr_1.6fr_0.9fr_1.1fr]
                       items-center gap-4 border-b px-5 py-4 transition-colors
                     "
                     style={{
@@ -472,6 +473,185 @@ const EmployeeTable = () => {
                         Delete
                       </button>
                     </div>
+                  </div>
+
+                  {/* Mobile card */}
+                  <div
+                    className="border-b p-4 lg:hidden"
+                    style={{
+                      background: rowBg,
+                      borderColor: 'var(--border-soft)',
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <Link
+                        href={`/employees/${employee.id}`}
+                        className="group flex min-w-0 flex-1 items-center gap-3"
+                      >
+                        <div
+                          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl text-sm font-black"
+                          style={{
+                            background: 'linear-gradient(135deg, var(--accent), #ffdc63)',
+                            color: '#111111',
+                            boxShadow: '0 12px 28px rgba(255, 193, 7, 0.18)',
+                          }}
+                        >
+                          {employee.firstName?.[0]}
+                          {employee.lastName?.[0]}
+                        </div>
+
+                        <div className="min-w-0">
+                          <p
+                            className="truncate font-black transition-colors group-hover:text-[var(--accent)]"
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            {employee.firstName} {employee.lastName}
+                          </p>
+
+                          <p
+                            className="truncate text-xs"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            {employee.email}
+                          </p>
+                        </div>
+                      </Link>
+
+                      <div className="relative flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setStatusDropdown(
+                              statusDropdown === employee.id ? null : employee.id,
+                            )
+                          }
+                          className="cursor-pointer transition-all hover:-translate-y-0.5"
+                          aria-label="Change status"
+                        >
+                          <StatusBadge status={employee.status} />
+                        </button>
+
+                        {statusDropdown === employee.id && (
+                          <div
+                            className="absolute right-0 top-[38px] z-40 min-w-40 overflow-hidden rounded-2xl border p-1"
+                            style={{
+                              background: 'var(--card-bg)',
+                              borderColor: 'var(--border)',
+                              boxShadow: '0 22px 60px rgba(0,0,0,0.24)',
+                              backdropFilter: 'var(--blur)',
+                              WebkitBackdropFilter: 'var(--blur)',
+                            }}
+                          >
+                            {STATUS_KEYS.map((status) => (
+                              <button
+                                key={status}
+                                type="button"
+                                onClick={() => handleStatusChange(employee.id, status)}
+                                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold transition-all hover:translate-x-0.5"
+                                style={{
+                                  color:
+                                    status === 'active'
+                                      ? 'var(--success)'
+                                      : status === 'absent'
+                                        ? 'var(--danger)'
+                                        : status === 'on_break'
+                                          ? 'var(--accent)'
+                                          : status === 'on_leave'
+                                            ? 'var(--info)'
+                                            : 'var(--text-muted)',
+                                }}
+                              >
+                                <span
+                                  className="h-2.5 w-2.5 rounded-full"
+                                  style={{
+                                    background:
+                                      status === 'active'
+                                        ? 'var(--success)'
+                                        : status === 'absent'
+                                          ? 'var(--danger)'
+                                          : status === 'on_break'
+                                            ? 'var(--accent)'
+                                            : status === 'on_leave'
+                                              ? 'var(--info)'
+                                              : 'var(--text-muted)',
+                                  }}
+                                />
+
+                                {STATUS_LABELS[status]}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div className="min-w-0">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-wider"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          Role
+                        </p>
+                        <p
+                          className="truncate text-sm font-semibold"
+                          style={{ color: 'var(--text-secondary)' }}
+                        >
+                          {employee.role}
+                        </p>
+                      </div>
+
+                      <div className="min-w-0">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-wider"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          Department
+                        </p>
+                        <span
+                          className="mt-0.5 inline-flex max-w-full rounded-full border px-2.5 py-0.5 text-xs font-bold"
+                          style={{
+                            background: 'var(--accent-soft)',
+                            borderColor: 'var(--border-accent)',
+                            color: 'var(--accent)',
+                          }}
+                        >
+                          <span className="truncate">
+                            {getDeptName(employee.departmentId)}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 flex gap-2">
+                      <Link href={`/employees/${employee.id}/edit`} className="flex-1">
+                        <button
+                          type="button"
+                          className="w-full rounded-xl border px-3 py-2.5 text-xs font-black transition-all active:scale-[0.98]"
+                          style={{
+                            background: 'var(--bg-surface-soft)',
+                            borderColor: 'var(--border)',
+                            color: 'var(--text-primary)',
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={() => setDeleteTarget(employee)}
+                        className="flex-1 rounded-xl border px-3 py-2.5 text-xs font-black transition-all active:scale-[0.98]"
+                        style={{
+                          background: 'var(--danger-soft)',
+                          borderColor: 'rgba(255, 77, 79, 0.28)',
+                          color: 'var(--danger)',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                   </div>
                 );
               })

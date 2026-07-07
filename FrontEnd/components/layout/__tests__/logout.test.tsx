@@ -31,7 +31,7 @@ const renderSidebar = () =>
   render(
     <ThemeProvider>
       <AuthProvider>
-        <Sidebar />
+        <Sidebar mobileOpen={false} onClose={() => {}} />
       </AuthProvider>
     </ThemeProvider>,
   );

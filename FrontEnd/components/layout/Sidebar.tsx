@@ -71,6 +71,13 @@ const IconLogout = () => (
   </svg>
 );
 
+const IconClose = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 6 6 18" />
+    <path d="M6 6l12 12" />
+  </svg>
+);
+
 const ADMIN_NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: <IconDashboard /> },
   { href: '/employees', label: 'Employees', icon: <IconEmployees /> },
@@ -82,7 +89,12 @@ const EMPLOYEE_NAV = [
   { href: '/my-attendance', label: 'My Attendance', icon: <IconAttendance /> },
 ];
 
-const Sidebar = () => {
+interface SidebarProps {
+  mobileOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
@@ -101,20 +113,51 @@ const Sidebar = () => {
   };
 
   return (
-    <aside
-      className="hidden h-full w-[280px] flex-shrink-0 flex-col overflow-hidden rounded-[var(--radius-xl)] border p-4 lg:flex"
-      style={{
-        background: 'linear-gradient(180deg, var(--sidebar-bg), var(--bg-surface-soft))',
-        borderColor: 'var(--border)',
-        color: 'var(--sidebar-text)',
-        boxShadow: 'var(--card-shadow)',
-        backdropFilter: 'var(--blur)',
-        WebkitBackdropFilter: 'var(--blur)',
-        transition: 'background-color 0.25s ease, border-color 0.25s ease',
-      }}
-    >
-      {/* Logo */}
-      <div
+    <>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/55 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 flex h-full w-[260px] max-w-[82vw] flex-shrink-0 flex-col
+          overflow-hidden border p-4 transition-transform duration-300 ease-in-out
+          sm:w-[280px]
+          lg:static lg:z-auto lg:w-[280px] lg:max-w-none lg:translate-x-0 lg:rounded-[var(--radius-xl)]
+          ${mobileOpen ? 'translate-x-0 rounded-r-[var(--radius-xl)]' : '-translate-x-full'}
+        `}
+        style={{
+          background: 'linear-gradient(180deg, var(--sidebar-bg), var(--bg-surface-soft))',
+          borderColor: 'var(--border)',
+          color: 'var(--sidebar-text)',
+          boxShadow: 'var(--card-shadow)',
+          backdropFilter: 'var(--blur)',
+          WebkitBackdropFilter: 'var(--blur)',
+          transition: 'background-color 0.25s ease, border-color 0.25s ease, transform 0.3s ease-in-out',
+        }}
+      >
+        {/* Mobile close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-xl border lg:hidden"
+          style={{
+            background: 'var(--bg-surface-soft)',
+            borderColor: 'var(--border)',
+            color: 'var(--sidebar-text)',
+          }}
+          aria-label="Close menu"
+        >
+          <IconClose />
+        </button>
+
+        {/* Logo */}
+        <div
         className="relative overflow-hidden rounded-3xl border p-4"
         style={{
           background: 'linear-gradient(135deg, var(--accent-soft), rgba(255,255,255,0.04))',
@@ -203,6 +246,7 @@ const Sidebar = () => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className="group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5"
               style={{
                 background: isActive ? 'var(--sidebar-active-bg)' : 'transparent',
@@ -303,7 +347,8 @@ const Sidebar = () => {
           v1.0.1
         </p>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

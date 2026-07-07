@@ -40,7 +40,7 @@ const Modal = ({
 
       {/* Dialog */}
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-[var(--radius-xl)] border p-6"
+        className="relative max-h-[85vh] w-full max-w-md overflow-y-auto overflow-x-hidden rounded-[var(--radius-xl)] border p-5 sm:p-6"
         style={{
           background: 'var(--card-bg)',
           borderColor: danger ? 'rgba(255, 77, 79, 0.30)' : 'var(--border)',

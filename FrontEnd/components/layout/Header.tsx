@@ -28,6 +28,14 @@ const getTitle = (pathname: string): string => {
   return 'Employee Management';
 };
 
+const IconMenu = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 6h16" />
+    <path d="M4 12h16" />
+    <path d="M4 18h16" />
+  </svg>
+);
+
 const getSubtitle = (pathname: string): string => {
   if (PAGE_SUBTITLES[pathname]) return PAGE_SUBTITLES[pathname];
 
@@ -42,7 +50,11 @@ const getSubtitle = (pathname: string): string => {
   return 'Manage your employee management system.';
 };
 
-const Header = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header = ({ onMenuClick }: HeaderProps) => {
   const pathname = usePathname();
   const { user } = useAuth();
 
@@ -55,27 +67,43 @@ const Header = () => {
 
   return (
     <header
-      className="flex h-[70px] flex-shrink-0 items-center justify-between gap-4 border-b px-4 lg:px-5"
+      className="flex h-[64px] flex-shrink-0 items-center justify-between gap-2 border-b px-3 sm:h-[70px] sm:gap-4 sm:px-4 lg:px-5"
       style={{
         background: 'transparent',
         borderColor: 'var(--border)',
       }}
     >
       {/* Left */}
-      <div className="min-w-0">
-        <h2
-          className="truncate text-2xl font-black leading-tight tracking-tight"
-          style={{ color: 'var(--text-primary)' }}
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border transition-all hover:-translate-y-0.5 lg:hidden"
+          style={{
+            background: 'var(--card-bg)',
+            borderColor: 'var(--border)',
+            color: 'var(--text-primary)',
+          }}
+          aria-label="Open menu"
         >
-          {title}
-        </h2>
+          <IconMenu />
+        </button>
 
-        <p
-          className="mt-0.5 hidden max-w-[620px] truncate text-sm md:block"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          {subtitle}
-        </p>
+        <div className="min-w-0">
+          <h2
+            className="truncate text-lg font-black leading-tight tracking-tight sm:text-2xl"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            {title}
+          </h2>
+
+          <p
+            className="mt-0.5 hidden max-w-[620px] truncate text-sm md:block"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {subtitle}
+          </p>
+        </div>
       </div>
 
       {/* Right */}

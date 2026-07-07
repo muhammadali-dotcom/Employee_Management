@@ -276,10 +276,10 @@ const AttendancePage = () => {
 
         {/* Top controls */}
         <div className="dashboard-card p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-3">
               <div
-                className="flex h-11 w-11 items-center justify-center rounded-2xl text-lg"
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl text-lg"
                 style={{
                   background: 'var(--accent-soft)',
                   color: 'var(--accent)',
@@ -305,9 +305,9 @@ const AttendancePage = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <div
-                className="flex items-center gap-2 rounded-2xl border p-1"
+                className="flex items-center justify-between gap-2 rounded-2xl border p-1 sm:justify-start"
                 style={{
                   background: 'var(--bg-surface-soft)',
                   borderColor: 'var(--border)',
@@ -316,7 +316,7 @@ const AttendancePage = () => {
                 <button
                   type="button"
                   onClick={prevMonth}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                   style={{
                     background: 'var(--card-bg)',
                     color: 'var(--text-primary)',
@@ -327,7 +327,7 @@ const AttendancePage = () => {
                 </button>
 
                 <span
-                  className="min-w-40 text-center text-sm font-bold"
+                  className="min-w-0 flex-1 text-center text-sm font-bold sm:min-w-40 sm:flex-none"
                   style={{ color: 'var(--text-primary)' }}
                 >
                   {monthLabel}
@@ -336,7 +336,7 @@ const AttendancePage = () => {
                 <button
                   type="button"
                   onClick={nextMonth}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                   style={{
                     background: 'var(--card-bg)',
                     color: 'var(--text-primary)',
@@ -347,31 +347,38 @@ const AttendancePage = () => {
                 </button>
               </div>
 
-              <div className="w-48">
-                <Select
-                  options={deptOptions}
-                  value={filterDept}
-                  onChange={(e) => setFilterDept(e.target.value)}
-                />
-              </div>
+              <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:gap-3">
+                <div className="w-full sm:w-44">
+                  <Select
+                    options={deptOptions}
+                    value={filterDept}
+                    onChange={(e) => setFilterDept(e.target.value)}
+                  />
+                </div>
 
-              <div className="w-56">
-                <Select
-                  options={empOptions}
-                  value={filterEmp}
-                  onChange={(e) => setFilterEmp(e.target.value)}
-                />
-              </div>
+                <div className="w-full sm:w-52">
+                  <Select
+                    options={empOptions}
+                    value={filterEmp}
+                    onChange={(e) => setFilterEmp(e.target.value)}
+                  />
+                </div>
 
-              <Button variant="secondary" size="sm" onClick={load}>
-                ↻ Refresh
-              </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={load}
+                  className="w-full sm:w-auto"
+                >
+                  ↻ Refresh
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Summary cards */}
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-6">
           <div
             className="rounded-2xl border p-3"
             style={{
