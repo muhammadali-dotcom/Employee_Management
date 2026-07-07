@@ -11,20 +11,20 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <RouteGuard>
       <div
-        className="fixed inset-0 min-h-screen overflow-auto p-2 sm:p-3 lg:p-4"
+        className="min-h-[100dvh] overflow-auto p-2 sm:p-3 lg:p-4"
         style={{
           background: 'transparent',
           color: 'var(--text-primary)',
         }}
       >
-        <div className="flex h-full min-h-0 gap-0 lg:gap-5">
+        <div className="flex min-h-full gap-0 lg:gap-5">
           <Sidebar
             mobileOpen={mobileNavOpen}
             onClose={() => setMobileNavOpen(false)}
           />
 
           <section
-            className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto rounded-[var(--radius-xl)] border"
+            className="flex min-w-0 flex-1 flex-col rounded-[var(--radius-xl)] border"
             style={{
               background:
                 'linear-gradient(135deg, var(--bg-surface), var(--bg-surface-soft))',
@@ -38,7 +38,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
               <Header onMenuClick={() => setMobileNavOpen(true)} />
             </div>
 
-            <main className="min-h-0 flex-1 overflow-auto p-3 sm:p-4">
+            <main className="flex-1 p-3 sm:p-4">
               {children}
             </main>
           </section>

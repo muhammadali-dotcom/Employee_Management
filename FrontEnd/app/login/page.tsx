@@ -16,6 +16,9 @@ const LoginPage = () => {
   const [emailErr, setEmailErr] = useState('');
   const [passwordErr, setPasswordErr] = useState('');
 
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
   useEffect(() => {
     if (user) {
       router.replace(user.role === 'super_admin' ? '/dashboard' : '/my-attendance');
@@ -75,9 +78,25 @@ const LoginPage = () => {
     WebkitTextFillColor: 'var(--text-primary)',
     caretColor: 'var(--text-primary)',
     WebkitBoxShadow: '0 0 0 1000px var(--input-bg) inset',
-    boxShadow: '0 0 0 1000px var(--input-bg) inset',
+    boxShadow: 'none',
+    border: 'none',
+    outline: 'none',
     transition: 'background-color 9999s ease-in-out 0s',
   };
+
+  const getWrapperStyle = (hasError: boolean, isFocused: boolean) => ({
+    background: 'var(--input-bg)',
+    borderColor: hasError
+      ? 'rgba(255, 77, 79, 0.45)'
+      : isFocused
+        ? 'var(--border-accent)'
+        : 'var(--input-border)',
+    boxShadow: hasError
+      ? '0 0 0 4px var(--danger-soft)'
+      : isFocused
+        ? '0 0 0 4px var(--accent-soft)'
+        : 'none',
+  });
 
   return (
     <main
@@ -103,6 +122,20 @@ const LoginPage = () => {
         input::placeholder {
           color: var(--text-muted);
           opacity: 0.8;
+        }
+
+        /* Prevent the global input rule from adding a second border/shadow on login inputs */
+        .login-input-field {
+          border: none !important;
+          box-shadow: none !important;
+          outline: none !important;
+          background: transparent !important;
+        }
+
+        .login-input-field:focus {
+          border: none !important;
+          box-shadow: none !important;
+          outline: none !important;
         }
       `}</style>
 
@@ -259,12 +292,8 @@ const LoginPage = () => {
                 </label>
 
                 <div
-                  className="flex items-center gap-3 rounded-2xl border px-3.5 py-3 transition-all"
-                  style={{
-                    background: 'var(--input-bg)',
-                    borderColor: emailErr ? 'rgba(255, 77, 79, 0.45)' : 'var(--input-border)',
-                    boxShadow: emailErr ? '0 0 0 4px var(--danger-soft)' : 'none',
-                  }}
+                  className="flex h-12 items-center gap-3 rounded-2xl border px-4 transition-all duration-200"
+                  style={getWrapperStyle(!!emailErr, emailFocused)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -293,10 +322,12 @@ const LoginPage = () => {
                       setEmailErr('');
                       setError('');
                     }}
+                    onFocus={() => setEmailFocused(true)}
+                    onBlur={() => setEmailFocused(false)}
                     placeholder="you@company.com"
                     aria-invalid={!!emailErr}
                     aria-describedby={emailErr ? 'email-error' : undefined}
-                    className="w-full border-0 bg-transparent text-sm outline-none"
+                    className="login-input-field w-full bg-transparent text-sm placeholder:text-[color:var(--text-muted)]"
                     style={inputStyle}
                   />
                 </div>
@@ -324,12 +355,8 @@ const LoginPage = () => {
                 </label>
 
                 <div
-                  className="flex items-center gap-3 rounded-2xl border px-3.5 py-3 transition-all"
-                  style={{
-                    background: 'var(--input-bg)',
-                    borderColor: passwordErr ? 'rgba(255, 77, 79, 0.45)' : 'var(--input-border)',
-                    boxShadow: passwordErr ? '0 0 0 4px var(--danger-soft)' : 'none',
-                  }}
+                  className="flex h-12 items-center gap-3 rounded-2xl border px-4 transition-all duration-200"
+                  style={getWrapperStyle(!!passwordErr, passwordFocused)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -358,10 +385,12 @@ const LoginPage = () => {
                       setPasswordErr('');
                       setError('');
                     }}
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={() => setPasswordFocused(false)}
                     placeholder="••••••••"
                     aria-invalid={!!passwordErr}
                     aria-describedby={passwordErr ? 'password-error' : undefined}
-                    className="w-full border-0 bg-transparent text-sm outline-none"
+                    className="login-input-field w-full bg-transparent text-sm placeholder:text-[color:var(--text-muted)]"
                     style={inputStyle}
                   />
                 </div>

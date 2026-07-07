@@ -242,7 +242,7 @@ const DepartmentsPage = () => {
 
   return (
     <AppShell>
-      <div className="grid h-full min-h-0 grid-rows-[auto_auto_1fr] gap-4 overflow-hidden">
+      <div className="grid min-h-0 grid-rows-[auto_auto_1fr] gap-4 pb-20 sm:pb-8 lg:h-[calc(100dvh-6rem)] lg:pb-0">
         {/* Summary */}
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
           {/* Departments */}

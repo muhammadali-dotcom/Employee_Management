@@ -248,7 +248,7 @@ const AttendancePage = () => {
 
   return (
     <AppShell>
-      <div className="grid h-full min-h-0 grid-rows-[auto_auto_1fr_auto] gap-4 overflow-hidden">
+      <div className="grid min-h-0 grid-rows-[auto_auto_1fr_auto] gap-4 pb-20 sm:pb-8 lg:h-[calc(100dvh-6rem)] lg:pb-0">
         {/* Error banner */}
         {loadError ? (
           <div
