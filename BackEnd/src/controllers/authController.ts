@@ -29,10 +29,14 @@ const signRefreshToken = (id: string): string => {
 }
 
 const setRefreshCookie = (res: Response, token: string) => {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie('refreshToken', token, {
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    // 'none' is required for the cookie to be sent cross-site (frontend and
+    // backend live on different Vercel domains); browsers require secure:true
+    // whenever sameSite is 'none'.
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     path: '/api/auth',              // cookie only sent to /api/auth routes
   });
