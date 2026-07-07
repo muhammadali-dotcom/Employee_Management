@@ -181,7 +181,7 @@ const LoginPage = () => {
               className="mt-4 max-w-md text-sm leading-relaxed"
               style={{ color: 'var(--text-secondary)' }}
             >
-              Track employees, attendance, departments, and daily activity from one clean dashboard. muhammad ali saleem
+              Track employees, attendance, departments, and daily activity from one clean dashboard.
             </p>
           </div>
 
