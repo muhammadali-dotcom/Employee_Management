@@ -44,7 +44,7 @@ interface GoogleLoginButtonProps {
   disabled?: boolean;
 }
 
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
 
 export const GoogleLoginButton = ({
   onCredential,
@@ -55,9 +55,13 @@ export const GoogleLoginButton = ({
 
   const initializeGoogleButton = useCallback(() => {
     if (!GOOGLE_CLIENT_ID) {
-      setScriptError('Google login is not configured.');
+      setScriptError(
+        'Google login is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID to FrontEnd/.env.local and restart the app.',
+      );
       return;
     }
+
+    setScriptError('');
 
     const google = (window as GoogleWindow).google;
 
