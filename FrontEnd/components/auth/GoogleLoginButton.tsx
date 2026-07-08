@@ -2,19 +2,41 @@
 
 // ─────────────────────────────────────────────────────────────────────────────
 // components/auth/GoogleLoginButton.tsx  —  GOOGLE IDENTITY SERVICES BUTTON
-//
-// Loads Google's client-side SDK, renders Google's own "Sign in with Google"
-// button, and hands the resulting ID token (a signed JWT from Google) up to
-// the caller via onCredential. This component never talks to our backend —
-// it only knows how to get a token out of Google. AuthContext decides what
-// to do with that token (POST it to /api/auth/google).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface GoogleCredentialResponse {
-  credential: string; // the ID token
+  credential?: string;
+}
+
+interface GoogleAccountsId {
+  initialize: (config: {
+    client_id: string;
+    callback: (response: GoogleCredentialResponse) => void;
+  }) => void;
+
+  renderButton: (
+    parent: HTMLElement,
+    options: {
+      type: 'standard';
+      theme: 'outline';
+      size: 'large';
+      width: number;
+      text: 'continue_with';
+    },
+  ) => void;
+}
+
+interface GoogleIdentityServices {
+  accounts: {
+    id: GoogleAccountsId;
+  };
+}
+
+interface GoogleWindow extends Window {
+  google?: GoogleIdentityServices;
 }
 
 interface GoogleLoginButtonProps {
@@ -24,7 +46,10 @@ interface GoogleLoginButtonProps {
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonProps) => {
+export const GoogleLoginButton = ({
+  onCredential,
+  disabled,
+}: GoogleLoginButtonProps) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const [scriptError, setScriptError] = useState('');
 
@@ -34,13 +59,18 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
       return;
     }
 
-    // window.google is injected by the script we load below.
-    const google = (window as unknown as { google?: any }).google;
+    const google = (window as GoogleWindow).google;
+
     if (!google || !buttonRef.current) return;
 
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: (response: GoogleCredentialResponse) => {
+        if (!response.credential) {
+          setScriptError('Google login failed. No credential received.');
+          return;
+        }
+
         onCredential(response.credential);
       },
     });
@@ -54,14 +84,8 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
     });
   }, [onCredential]);
 
-  // If the GSI script was already loaded by a previous mount of this
-  // component (e.g. the user logged in, navigated away, then logged out
-  // and landed back on /login), next/script won't fire onLoad again since
-  // the <script> tag itself isn't re-inserted. Detect that case directly
-  // and initialize immediately instead of waiting for an onLoad that will
-  // never come.
   useEffect(() => {
-    if ((window as unknown as { google?: unknown }).google) {
+    if ((window as GoogleWindow).google) {
       initializeGoogleButton();
     }
   }, [initializeGoogleButton]);
@@ -72,11 +96,16 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
         onLoad={initializeGoogleButton}
-        onError={() => setScriptError('Could not load Google Sign-In. Check your connection.')}
+        onError={() =>
+          setScriptError('Could not load Google Sign-In. Check your connection.')
+        }
       />
 
       {scriptError ? (
-        <p className="text-center text-xs font-semibold" style={{ color: 'var(--danger)' }}>
+        <p
+          className="text-center text-xs font-semibold"
+          style={{ color: 'var(--danger)' }}
+        >
           {scriptError}
         </p>
       ) : (
