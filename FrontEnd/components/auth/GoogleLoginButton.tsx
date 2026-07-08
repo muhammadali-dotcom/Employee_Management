@@ -22,6 +22,30 @@ interface GoogleLoginButtonProps {
   disabled?: boolean;
 }
 
+// Minimal shape of the Google Identity Services global we actually use —
+// the full SDK's types aren't published, so we declare just this slice
+// instead of reaching for `any`.
+interface GoogleIdentityServices {
+  accounts: {
+    id: {
+      initialize: (config: {
+        client_id: string;
+        callback: (response: GoogleCredentialResponse) => void;
+      }) => void;
+      renderButton: (
+        parent: HTMLElement,
+        options: {
+          type: 'standard' | 'icon';
+          theme: 'outline' | 'filled_blue' | 'filled_black';
+          size: 'large' | 'medium' | 'small';
+          width?: number;
+          text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
+        },
+      ) => void;
+    };
+  };
+}
+
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonProps) => {
@@ -35,7 +59,7 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
     }
 
     // window.google is injected by the script we load below.
-    const google = (window as unknown as { google?: any }).google;
+    const google = (window as unknown as { google?: GoogleIdentityServices }).google;
     if (!google || !buttonRef.current) return;
 
     google.accounts.id.initialize({
