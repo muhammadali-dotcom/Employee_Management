@@ -11,7 +11,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Script from 'next/script';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface GoogleCredentialResponse {
   credential: string; // the ID token
@@ -20,30 +20,6 @@ interface GoogleCredentialResponse {
 interface GoogleLoginButtonProps {
   onCredential: (idToken: string) => void | Promise<void>;
   disabled?: boolean;
-}
-
-// Minimal shape of the Google Identity Services global we actually use —
-// the full SDK's types aren't published, so we declare just this slice
-// instead of reaching for `any`.
-interface GoogleIdentityServices {
-  accounts: {
-    id: {
-      initialize: (config: {
-        client_id: string;
-        callback: (response: GoogleCredentialResponse) => void;
-      }) => void;
-      renderButton: (
-        parent: HTMLElement,
-        options: {
-          type: 'standard' | 'icon';
-          theme: 'outline' | 'filled_blue' | 'filled_black';
-          size: 'large' | 'medium' | 'small';
-          width?: number;
-          text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
-        },
-      ) => void;
-    };
-  };
 }
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -59,7 +35,7 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
     }
 
     // window.google is injected by the script we load below.
-    const google = (window as unknown as { google?: GoogleIdentityServices }).google;
+    const google = (window as unknown as { google?: any }).google;
     if (!google || !buttonRef.current) return;
 
     google.accounts.id.initialize({
@@ -77,6 +53,18 @@ export const GoogleLoginButton = ({ onCredential, disabled }: GoogleLoginButtonP
       text: 'continue_with',
     });
   }, [onCredential]);
+
+  // If the GSI script was already loaded by a previous mount of this
+  // component (e.g. the user logged in, navigated away, then logged out
+  // and landed back on /login), next/script won't fire onLoad again since
+  // the <script> tag itself isn't re-inserted. Detect that case directly
+  // and initialize immediately instead of waiting for an onLoad that will
+  // never come.
+  useEffect(() => {
+    if ((window as unknown as { google?: unknown }).google) {
+      initializeGoogleButton();
+    }
+  }, [initializeGoogleButton]);
 
   return (
     <div>
