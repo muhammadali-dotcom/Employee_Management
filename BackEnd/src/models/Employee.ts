@@ -20,12 +20,14 @@ interface EmployeeAttributes {
   status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   joinDate:     string;
   passwordHash: string | null;
+  googleId:     string | null;
+  authProvider: 'local' | 'google';
   lastLoginAt?: Date | null;
   createdAt?:   Date;
   updatedAt?:   Date;
 }
 
-type EmployeeCreationAttributes = Optional<EmployeeAttributes, 'id'>;
+type EmployeeCreationAttributes = Optional<EmployeeAttributes, 'id' | 'authProvider'>;
 
 class Employee extends Model<EmployeeAttributes, EmployeeCreationAttributes>
   implements EmployeeAttributes {
@@ -39,6 +41,8 @@ class Employee extends Model<EmployeeAttributes, EmployeeCreationAttributes>
   declare status:       'active' | 'inactive' | 'on_break' | 'on_leave' | 'absent';
   declare joinDate:     string;
   declare passwordHash: string | null;
+  declare googleId:     string | null;
+  declare authProvider: 'local' | 'google';
   declare lastLoginAt:  Date | null;
   declare createdAt:    Date;
   declare updatedAt:    Date;
@@ -64,6 +68,12 @@ Employee.init(
       allowNull: false,
       unique:    true,
       validate: { isEmail: true },
+      // Normalize on write so lookups (login, Google login) never fail due
+      // to case differences between how an admin typed it and how a login
+      // provider reports it (Google always returns lowercase emails).
+      set(value: string) {
+        this.setDataValue('email', value.trim().toLowerCase());
+      },
     },
     phone: {
       type:      DataTypes.STRING(30),
@@ -89,6 +99,16 @@ Employee.init(
     passwordHash: {
       type:      DataTypes.STRING,
       allowNull: true,
+    },
+    googleId: {
+      type:      DataTypes.STRING,
+      allowNull: true,
+      unique:    true,
+    },
+    authProvider: {
+      type:         DataTypes.STRING(20),
+      allowNull:    false,
+      defaultValue: 'local',
     },
     lastLoginAt: {
       type: DataTypes.DATE,

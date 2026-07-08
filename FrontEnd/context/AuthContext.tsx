@@ -31,6 +31,7 @@ interface AuthContextValue {
   /** true while the initial silent refresh is in progress (used by RouteGuard) */
   isInitializing:     boolean;
   login:              (email: string, password: string) => Promise<void>;
+  loginWithGoogle:    (idToken: string) => Promise<void>;
   logout:             () => Promise<void>;
   refreshAccessToken: () => Promise<string | null>;
   setToken:           (token: string) => void;
@@ -105,6 +106,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(data.user);
   }, []);
 
+  // ── Login with Google ────────────────────────────────────────────────────
+  // idToken comes from GoogleLoginButton — a signed JWT issued by Google.
+  // The backend verifies it and returns the same accessToken/user shape as
+  // the password login above, so the rest of the app treats both identically.
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const res = await fetch(`${API_BASE}/api/auth/google`, {
+      method:      'POST',
+      headers:     { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body:        JSON.stringify({ idToken }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Google login failed');
+    }
+
+    const data = await res.json();
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+  }, []);
+
   // ── Logout ────────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
     try {
@@ -153,7 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, isInitializing, login, logout, refreshAccessToken, setToken }}
+      value={{ user, accessToken, isInitializing, login, loginWithGoogle, logout, refreshAccessToken, setToken }}
     >
       {children}
     </AuthContext.Provider>

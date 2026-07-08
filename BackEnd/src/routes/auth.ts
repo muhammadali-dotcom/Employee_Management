@@ -5,6 +5,7 @@
 //
 // Public routes (no token required):
 //   POST /api/auth/login
+//   POST /api/auth/google
 //   POST /api/auth/refresh
 //   POST /api/auth/logout
 //
@@ -13,13 +14,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { Router } from 'express';
-import { login, refresh, logout, setPassword } from '../controllers/authController';
+import { login, googleLogin, refresh, logout, setPassword } from '../controllers/authController';
 import { authenticate } from '../middleware/authenticate';
 import { requireRole }  from '../middleware/requireRole';
 
 const router = Router();
 
 router.post('/login',        login);
+router.post('/google',       googleLogin);
 router.post('/refresh',      refresh);
 router.post('/logout',       logout);
 router.post('/set-password', authenticate, requireRole('super_admin'), setPassword);

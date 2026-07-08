@@ -1,17 +1,19 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton';
 
 const LoginPage = () => {
-  const { login, user } = useAuth();
+  const { login, loginWithGoogle, user } = useAuth();
   const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const [emailErr, setEmailErr] = useState('');
   const [passwordErr, setPasswordErr] = useState('');
@@ -73,6 +75,27 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleCredential = useCallback(async (idToken: string) => {
+    setError('');
+    setGoogleLoading(true);
+
+    try {
+      await loginWithGoogle(idToken);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Google login failed';
+
+      if (msg.includes('No account found')) {
+        setError('No account found for this Google email. Contact your admin to get access.');
+      } else if (msg.includes('not verified')) {
+        setError('Your Google email is not verified. Please verify it with Google first.');
+      } else {
+        setError(msg);
+      }
+    } finally {
+      setGoogleLoading(false);
+    }
+  }, [loginWithGoogle]);
+
   const inputStyle = {
     color: 'var(--text-primary)',
     WebkitTextFillColor: 'var(--text-primary)',
@@ -81,6 +104,11 @@ const LoginPage = () => {
     boxShadow: 'none',
     border: 'none',
     outline: 'none',
+    // Inline style beats the global `input { background: var(--input-bg) }`
+    // rule unambiguously (no !important/specificity guessing needed) — the
+    // wrapper div already supplies the visible background.
+    background: 'transparent',
+    backgroundColor: 'transparent',
     transition: 'background-color 9999s ease-in-out 0s',
   };
 
@@ -124,12 +152,18 @@ const LoginPage = () => {
           opacity: 0.8;
         }
 
-        /* Prevent the global input rule from adding a second border/shadow on login inputs */
+        /* Prevent the global input rule from adding a second border/shadow on login inputs.
+           -webkit-appearance/appearance strip the browser's native input chrome, which
+           otherwise paints its own background box on top of ours (most visible in dark mode). */
         .login-input-field {
           border: none !important;
           box-shadow: none !important;
           outline: none !important;
           background: transparent !important;
+          background-color: transparent !important;
+          background-image: none !important;
+          -webkit-appearance: none;
+          appearance: none;
         }
 
         .login-input-field:focus {
@@ -467,6 +501,18 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
+
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1" style={{ background: 'var(--border)' }} />
+              <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+                OR
+              </span>
+              <div className="h-px flex-1" style={{ background: 'var(--border)' }} />
+            </div>
+
+            <div className="flex justify-center">
+              <GoogleLoginButton onCredential={handleGoogleCredential} disabled={loading || googleLoading} />
+            </div>
 
             <p
               className="mt-6 text-center text-xs lg:text-left"
