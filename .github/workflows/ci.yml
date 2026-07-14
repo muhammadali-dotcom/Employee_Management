@@ -55,6 +55,23 @@ jobs:
         run: npm run build
         working-directory: FrontEnd
 
+  docker-build:
+    name: Docker build check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t ems-backend ./BackEnd
+
+      - name: Build frontend image
+        run: |
+          docker build -t ems-frontend ./FrontEnd \
+            --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000 \
+            --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID=526833544047-3jh7ohpgdb0cb85vg7rcjuafcl358urd.apps.googleusercontent.com
+
   deploy-backend:
     name: Deploy backend to Vercel
     needs: build-and-test

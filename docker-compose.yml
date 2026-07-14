@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: ./BackEnd
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./BackEnd/.env
+
+  frontend:
+    build:
+      context: ./FrontEnd
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend

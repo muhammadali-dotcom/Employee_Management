@@ -421,7 +421,7 @@ const LoginPage = () => {
                     }}
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={() => setPasswordFocused(false)}
-                    placeholder="••••••••"
+                    placeholder="Enter your password"
                     aria-invalid={!!passwordErr}
                     aria-describedby={passwordErr ? 'password-error' : undefined}
                     className="login-input-field w-full bg-transparent text-sm placeholder:text-[color:var(--text-muted)]"
